@@ -17,6 +17,10 @@ Item {
     readonly property HyprlandMonitor monitor: Hypr.monitorFor(screen)
     readonly property string activeSpecial: (GlobalConfig.bar.workspaces.perMonitorWorkspaces ? monitor : Hypr.focusedMonitor)?.lastIpcObject.specialWorkspace?.name ?? ""
 
+    readonly property bool isHorizontal: Config.bar.position === "top" || Config.bar.position === "bottom"
+
+    // (Removed root-level 'size' property that was causing the 'label is not defined' error)
+
     layer.enabled: true
     layer.effect: OpacityMask {
         maskSource: mask
@@ -34,35 +38,26 @@ Item {
             radius: Tokens.rounding.full
 
             gradient: Gradient {
-                orientation: Gradient.Vertical
+                orientation: isHorizontal ? Gradient.Horizontal : Gradient.Vertical
 
-                GradientStop {
-                    position: 0
-                    color: Qt.rgba(0, 0, 0, 0)
-                }
-                GradientStop {
-                    position: 0.3
-                    color: Qt.rgba(0, 0, 0, 1)
-                }
-                GradientStop {
-                    position: 0.7
-                    color: Qt.rgba(0, 0, 0, 1)
-                }
-                GradientStop {
-                    position: 1
-                    color: Qt.rgba(0, 0, 0, 0)
-                }
+                GradientStop { position: 0; color: Qt.rgba(0, 0, 0, 0) }
+                GradientStop { position: 0.3; color: Qt.rgba(0, 0, 0, 1) }
+                GradientStop { position: 0.7; color: Qt.rgba(0, 0, 0, 1) }
+                GradientStop { position: 1; color: Qt.rgba(0, 0, 0, 0) }
             }
         }
 
         Rectangle {
             anchors.top: parent.top
+            anchors.bottom: isHorizontal ? parent.bottom : undefined
             anchors.left: parent.left
-            anchors.right: parent.right
+            anchors.right: isHorizontal ? undefined : parent.right
 
             radius: Tokens.rounding.full
-            implicitHeight: parent.height / 2
-            opacity: view.contentY > 0 ? 0 : 1
+            // Changed undefined to 0 to fix "Unable to assign [undefined] to double"
+            implicitWidth: isHorizontal ? parent.width / 2 : 0
+            implicitHeight: isHorizontal ? 0 : parent.height / 2
+            opacity: isHorizontal ? (view.contentX > 0 ? 0 : 1) : (view.contentY > 0 ? 0 : 1)
 
             Behavior on opacity {
                 Anim {}
@@ -71,12 +66,15 @@ Item {
 
         Rectangle {
             anchors.bottom: parent.bottom
-            anchors.left: parent.left
+            anchors.top: isHorizontal ? parent.top : undefined
             anchors.right: parent.right
+            anchors.left: isHorizontal ? undefined : parent.left
 
             radius: Tokens.rounding.full
-            implicitHeight: parent.height / 2
-            opacity: view.contentY < view.contentHeight - parent.height + Tokens.padding.small ? 0 : 1
+            // Changed undefined to 0 to fix "Unable to assign [undefined] to double"
+            implicitWidth: isHorizontal ? parent.width / 2 : 0
+            implicitHeight: isHorizontal ? 0 : parent.height / 2
+            opacity: isHorizontal ? (view.contentX < view.contentWidth - parent.width + Tokens.padding.small ? 0 : 1) : (view.contentY < view.contentHeight - parent.height + Tokens.padding.small ? 0 : 1)
 
             Behavior on opacity {
                 Anim {}
@@ -90,6 +88,8 @@ Item {
         anchors.fill: parent
         spacing: Tokens.spacing.normal
         interactive: false
+        
+        orientation: isHorizontal ? ListView.Horizontal : ListView.Vertical
 
         currentIndex: model.values.findIndex(w => w.name === root.activeSpecial)
         onCurrentIndexChanged: currentIndex = Qt.binding(() => model.values.findIndex(w => w.name === root.activeSpecial))
@@ -99,15 +99,24 @@ Item {
         }
 
         preferredHighlightBegin: 0
-        preferredHighlightEnd: height
+        preferredHighlightEnd: isHorizontal ? width : height
         highlightRangeMode: ListView.StrictlyEnforceRange
 
         highlightFollowsCurrentItem: false
+        
         highlight: Item {
-            y: view.currentItem?.y ?? 0
-            implicitHeight: (view.currentItem as SpecialWsDelegate)?.size ?? 0
+            x: isHorizontal ? (view.currentItem?.x ?? 0) : 0
+            y: isHorizontal ? 0 : (view.currentItem?.y ?? 0)
+            implicitWidth: isHorizontal ? ((view.currentItem as SpecialWsDelegate)?.size ?? 0) : 0
+            implicitHeight: isHorizontal ? 0 : ((view.currentItem as SpecialWsDelegate)?.size ?? 0)
+
+            Behavior on x {
+                enabled: isHorizontal
+                Anim {}
+            }
 
             Behavior on y {
+                enabled: !isHorizontal
                 Anim {}
             }
         }
@@ -167,12 +176,16 @@ Item {
         sourceComponent: Item {
             StyledClippingRect {
                 id: indicator
+                
+                anchors.left: isHorizontal ? undefined : parent.left
+                anchors.right: isHorizontal ? undefined : parent.right
+                anchors.top: isHorizontal ? parent.top : undefined
+                anchors.bottom: isHorizontal ? parent.bottom : undefined
 
-                anchors.left: parent.left
-                anchors.right: parent.right
-
-                y: (view.currentItem?.y ?? 0) - view.contentY
-                implicitHeight: (view.currentItem as SpecialWsDelegate)?.size ?? 0
+                x: isHorizontal ? ((view.currentItem?.x ?? 0) - view.contentX) : 0
+                y: isHorizontal ? 0 : ((view.currentItem?.y ?? 0) - view.contentY)
+                implicitWidth: isHorizontal ? ((view.currentItem as SpecialWsDelegate)?.size ?? 0) : view.width
+                implicitHeight: isHorizontal ? view.height : ((view.currentItem as SpecialWsDelegate)?.size ?? 0)
 
                 color: Colours.palette.m3tertiary
                 radius: Tokens.rounding.full
@@ -182,45 +195,43 @@ Item {
                     sourceColor: Colours.palette.m3onSurface
                     colorizationColor: Colours.palette.m3onTertiary
 
-                    anchors.horizontalCenter: parent.horizontalCenter
+                    anchors.horizontalCenter: isHorizontal ? undefined : parent.horizontalCenter
+                    anchors.verticalCenter: isHorizontal ? parent.verticalCenter : undefined
 
-                    x: 0
-                    y: -indicator.y
+                    x: isHorizontal ? -indicator.x : 0
+                    y: isHorizontal ? 0 : -indicator.y
                     implicitWidth: view.width
                     implicitHeight: view.height
                 }
 
-                Behavior on y {
-                    Anim {
-                        type: Anim.Emphasized
-                    }
-                }
-
-                Behavior on implicitHeight {
-                    Anim {
-                        type: Anim.Emphasized
-                    }
-                }
+                Behavior on x { enabled: isHorizontal; Anim { type: Anim.Emphasized } }
+                Behavior on y { enabled: !isHorizontal; Anim { type: Anim.Emphasized } }
+                Behavior on implicitWidth { enabled: isHorizontal; Anim { type: Anim.Emphasized } }
+                Behavior on implicitHeight { enabled: !isHorizontal; Anim { type: Anim.Emphasized } }
             }
         }
     }
 
     MouseArea {
-        property real startY
+        property real startPos
 
         anchors.fill: view
 
         drag.target: view.contentItem
-        drag.axis: Drag.YAxis
+        
+        drag.axis: isHorizontal ? Drag.XAxis : Drag.YAxis
+        drag.maximumX: 0
+        drag.minimumX: isHorizontal ? Math.min(0, view.width - view.contentWidth - Tokens.padding.small) : 0
         drag.maximumY: 0
-        drag.minimumY: Math.min(0, view.height - view.contentHeight - Tokens.padding.small)
+        drag.minimumY: isHorizontal ? 0 : Math.min(0, view.height - view.contentHeight - Tokens.padding.small)
 
-        onPressed: event => startY = event.y
+        onPressed: event => startPos = isHorizontal ? event.x : event.y
 
         onClicked: event => {
-            if (Math.abs(event.y - startY) > drag.threshold)
+            const currentPos = isHorizontal ? event.x : event.y;
+            if (Math.abs(currentPos - startPos) > drag.threshold)
                 return;
-
+            
             const ws = view.itemAt(event.x, event.y) as SpecialWsDelegate;
             if (ws?.modelData)
                 Hypr.dispatch(`togglespecialworkspace ${ws.modelData.name.slice(8)}`);
@@ -229,19 +240,30 @@ Item {
         }
     }
 
-    component SpecialWsDelegate: ColumnLayout {
+    component SpecialWsDelegate: GridLayout {
         id: ws
 
         required property HyprlandWorkspace modelData
-        readonly property int size: label.Layout.preferredHeight + (hasWindows ? windows.implicitHeight + Tokens.padding.small : 0)
+        
+        readonly property int size: isHorizontal ?
+            (label.Layout.preferredWidth + (hasWindows ? windows.implicitWidth + Tokens.padding.small : 0)) : 
+            (label.Layout.preferredHeight + (hasWindows ? windows.implicitHeight + Tokens.padding.small : 0))
+            
         property int wsId
         property string icon
         property bool hasWindows
 
-        anchors.left: view.contentItem.left
-        anchors.right: view.contentItem.right
+        columns: isHorizontal ? -1 : 1
+        rows: isHorizontal ? 1 : -1
+        flow: isHorizontal ? GridLayout.LeftToRight : GridLayout.TopToBottom
 
-        spacing: 0
+        anchors.left: isHorizontal ? undefined : view.contentItem.left
+        anchors.right: isHorizontal ? undefined : view.contentItem.right
+        anchors.top: isHorizontal ? view.contentItem.top : undefined
+        anchors.bottom: isHorizontal ? view.contentItem.bottom : undefined
+
+        columnSpacing: 0
+        rowSpacing: 0
 
         Component.onCompleted: {
             wsId = modelData.id;
@@ -249,23 +271,15 @@ Item {
             hasWindows = Config.bar.workspaces.showWindowsOnSpecialWorkspaces && modelData.lastIpcObject.windows > 0;
         }
 
-        // Hacky thing cause modelData gets destroyed before the remove anim finishes
         Connections {
-            function onIdChanged(): void {
-                if (ws.modelData)
-                    ws.wsId = ws.modelData.id;
-            }
-
-            function onNameChanged(): void {
-                if (ws.modelData)
-                    ws.icon = Icons.getSpecialWsIcon(ws.modelData.name);
-            }
-
+            function onIdChanged(): void { if (ws.modelData) ws.wsId = ws.modelData.id; }
+            function onNameChanged(): void { if (ws.modelData) ws.icon = Icons.getSpecialWsIcon(ws.modelData.name); }
             function onLastIpcObjectChanged(): void {
-                if (ws.modelData)
+                if (ws.modelData) {
                     ws.hasWindows = root.Config.bar.workspaces.showWindowsOnSpecialWorkspaces && ws.modelData.lastIpcObject.windows > 0;
+                    ws.wsId = ws.modelData.id;
+                }
             }
-
             target: ws.modelData
         }
 
@@ -274,7 +288,6 @@ Item {
                 if (ws.modelData)
                     ws.hasWindows = root.Config.bar.workspaces.showWindowsOnSpecialWorkspaces && ws.modelData.lastIpcObject.windows > 0;
             }
-
             target: root.Config.bar.workspaces
         }
 
@@ -283,14 +296,14 @@ Item {
 
             asynchronous: true
 
-            Layout.alignment: Qt.AlignHCenter | Qt.AlignTop
-            Layout.preferredHeight: Tokens.sizes.bar.innerWidth - Tokens.padding.small * 2
+            Layout.alignment: isHorizontal ? (Qt.AlignVCenter | Qt.AlignLeft) : (Qt.AlignHCenter | Qt.AlignTop)
+            Layout.preferredWidth: isHorizontal ? (Tokens.sizes.bar.innerWidth - Tokens.padding.small * 2) : -1
+            Layout.preferredHeight: isHorizontal ? -1 : (Tokens.sizes.bar.innerWidth - Tokens.padding.small * 2)
 
             sourceComponent: ws.icon.length === 1 ? letterComp : iconComp
 
             Component {
                 id: iconComp
-
                 MaterialIcon {
                     fill: 1
                     text: ws.icon
@@ -300,7 +313,6 @@ Item {
 
             Component {
                 id: letterComp
-
                 StyledText {
                     text: ws.icon
                     verticalAlignment: Qt.AlignVCenter
@@ -313,34 +325,30 @@ Item {
 
             asynchronous: true
 
-            Layout.alignment: Qt.AlignHCenter
-            Layout.fillHeight: true
-            Layout.preferredHeight: implicitHeight
+            Layout.alignment: isHorizontal ? Qt.AlignVCenter : Qt.AlignHCenter
+            Layout.fillWidth: isHorizontal && enabled
+            Layout.fillHeight: !isHorizontal && enabled
 
             visible: active
             active: ws.hasWindows
 
-            sourceComponent: Column {
+            sourceComponent: isHorizontal ? rowComponent : columnComponent
+
+            Behavior on Layout.preferredHeight {
+                enabled: !isHorizontal
+                Anim {}
+            }
+        }
+
+        // MOVED COMPONENTS INSIDE DELEGATE: This fixes the "ws is not defined" error
+        Component {
+            id: columnComponent
+            Column {
                 spacing: 0
-
-                add: Transition {
-                    Anim {
-                        properties: "scale"
-                        from: 0
-                        to: 1
-                        easing: Tokens.anim.standardDecel
-                    }
-                }
-
-                move: Transition {
-                    Anim {
-                        properties: "scale"
-                        to: 1
-                        easing: Tokens.anim.standardDecel
-                    }
-                    Anim {
-                        properties: "x,y"
-                    }
+                add: Transition { Anim { properties: "scale"; from: 0; to: 1; easing: Tokens.anim.standardDecel } }
+                move: Transition { 
+                    Anim { properties: "scale"; to: 1; easing: Tokens.anim.standardDecel }
+                    Anim { properties: "x,y" }
                 }
 
                 Repeater {
@@ -354,16 +362,40 @@ Item {
 
                     MaterialIcon {
                         required property var modelData
-
                         grade: 0
                         text: Icons.getAppCategoryIcon(modelData.lastIpcObject.class, "terminal")
                         color: Colours.palette.m3onSurfaceVariant
                     }
                 }
             }
+        }
 
-            Behavior on Layout.preferredHeight {
-                Anim {}
+        Component {
+            id: rowComponent
+            Row {
+                spacing: 0
+                add: Transition { Anim { properties: "scale"; from: 0; to: 1; easing: Tokens.anim.standardDecel } }
+                move: Transition {
+                    Anim { properties: "scale"; to: 1; easing: Tokens.anim.standardDecel }
+                    Anim { properties: "x,y" }
+                }
+
+                Repeater {
+                    model: ScriptModel {
+                        values: {
+                            const windows = Hypr.toplevels.values.filter(c => c.workspace?.id === ws.wsId);
+                            const maxIcons = root.Config.bar.workspaces.maxWindowIcons;
+                            return maxIcons > 0 ? windows.slice(0, maxIcons) : windows;
+                        }
+                    }
+
+                    MaterialIcon {
+                        required property var modelData
+                        grade: 0
+                        text: Icons.getAppCategoryIcon(modelData.lastIpcObject.class, "terminal")
+                        color: Colours.palette.m3onSurfaceVariant
+                    }
+                }
             }
         }
     }

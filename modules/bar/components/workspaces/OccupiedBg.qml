@@ -62,11 +62,15 @@ Item {
                 return i % Config.bar.workspaces.shown;
             }
 
-            anchors.horizontalCenter: root.horizontalCenter
+            readonly property bool isHorizontal: Config.bar.position === "top" || Config.bar.position === "bottom"
 
-            y: (start?.y ?? 0) - 1
-            implicitWidth: Tokens.sizes.bar.innerWidth - Tokens.padding.small * 2 + 2
-            implicitHeight: start && end ? end.y + end.size - start.y + 2 : 0
+            anchors.horizontalCenter: isHorizontal ? undefined : root.horizontalCenter
+            anchors.verticalCenter: isHorizontal ? root.verticalCenter : undefined
+
+            x: isHorizontal ? ((start?.x ?? 0) - 1) : 0
+            y: isHorizontal ? 0 : ((start?.y ?? 0) - 1)
+            implicitWidth: isHorizontal ? (start && end ? end.x + end.size - start.x + 2 : 0) : (Tokens.sizes.bar.innerWidth - Tokens.padding.small * 2 + 2)
+            implicitHeight: isHorizontal ? (Tokens.sizes.bar.innerWidth - Tokens.padding.small * 2 + 2) : (start && end ? end.y + end.size - start.y + 2 : 0)
 
             color: Colours.layer(Colours.palette.m3surfaceContainerHigh, 2)
             radius: Tokens.rounding.full
@@ -80,11 +84,23 @@ Item {
                 }
             }
 
+            Behavior on x {
+                enabled: isHorizontal
+                Anim {}
+            }
+
             Behavior on y {
+                enabled: !isHorizontal
+                Anim {}
+            }
+
+            Behavior on implicitWidth {
+                enabled: isHorizontal
                 Anim {}
             }
 
             Behavior on implicitHeight {
+                enabled: !isHorizontal
                 Anim {}
             }
         }

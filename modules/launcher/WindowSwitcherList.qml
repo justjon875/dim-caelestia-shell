@@ -23,7 +23,9 @@ PathView {
         if (!screen)
             return 0;
 
-        const barMargins = Math.max(Config.border.thickness, panels.bar.implicitWidth);
+        const isBarHorizontal = Config.bar.position === "top" || Config.bar.position === "bottom";
+        const barThickness = isBarHorizontal ? panels.bar.implicitHeight : panels.bar.implicitWidth;
+        const barMargins = Math.max(Config.border.thickness, barThickness);
         let outerMargins = 0;
         if (panels.popouts.hasCurrent && panels.popouts.currentCenter + panels.popouts.nonAnimHeight / 2 > screen.height - content.implicitHeight - Config.border.thickness * 2)
             outerMargins = panels.popouts.nonAnimWidth;

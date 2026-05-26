@@ -27,8 +27,10 @@ StyledClippingRect {
 
     property real blur: onSpecial ? 1 : 0
 
-    implicitWidth: Tokens.sizes.bar.innerWidth
-    implicitHeight: layout.implicitHeight + Tokens.padding.small * 2
+    readonly property bool isHorizontal: Config.bar.position === "top" || Config.bar.position === "bottom"
+
+    implicitWidth: isHorizontal ? (layout.implicitWidth + Tokens.padding.small * 2) : Tokens.sizes.bar.innerWidth
+    implicitHeight: isHorizontal ? Tokens.sizes.bar.innerWidth : (layout.implicitHeight + Tokens.padding.small * 2)
 
     color: Colours.tPalette.m3surfaceContainer
     radius: Tokens.rounding.full
@@ -60,11 +62,15 @@ StyledClippingRect {
             }
         }
 
-        ColumnLayout {
+        GridLayout {
             id: layout
 
             anchors.centerIn: parent
-            spacing: Math.floor(Tokens.spacing.small / 2)
+            columns: isHorizontal ? -1 : 1
+            rows: isHorizontal ? 1 : -1
+            flow: isHorizontal ? GridLayout.LeftToRight : GridLayout.TopToBottom
+            columnSpacing: Math.floor(Tokens.spacing.small / 2)
+            rowSpacing: Math.floor(Tokens.spacing.small / 2)
 
             Repeater {
                 id: workspaces
@@ -81,7 +87,8 @@ StyledClippingRect {
 
         Loader {
             asynchronous: true
-            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.horizontalCenter: isHorizontal ? undefined : parent.horizontalCenter
+            anchors.verticalCenter: isHorizontal ? parent.verticalCenter : undefined
             active: Config.bar.workspaces.activeIndicator
 
             sourceComponent: ActiveIndicator {

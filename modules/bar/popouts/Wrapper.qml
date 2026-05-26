@@ -20,8 +20,14 @@ Item {
     readonly property alias winfo: winfo
     readonly property alias controlCenter: controlCenter
 
-    readonly property real nonAnimWidth: children.find(c => c.shouldBeActive)?.implicitWidth ?? content.implicitWidth
-    readonly property real nonAnimHeight: children.find(c => c.shouldBeActive)?.implicitHeight ?? content.implicitHeight
+    readonly property real nonAnimWidth: content.shouldBeActive ? content.implicitWidth :
+                                         winfo.shouldBeActive ? winfo.implicitWidth :
+                                         controlCenter.shouldBeActive ? controlCenter.implicitWidth :
+                                         content.implicitWidth
+    readonly property real nonAnimHeight: content.shouldBeActive ? content.implicitHeight :
+                                          winfo.shouldBeActive ? winfo.implicitHeight :
+                                          controlCenter.shouldBeActive ? controlCenter.implicitHeight :
+                                          content.implicitHeight
     readonly property Item current: (content.item as Content)?.current ?? null
     readonly property bool isDetached: detachedMode.length > 0
 

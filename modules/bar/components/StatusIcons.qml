@@ -16,34 +16,51 @@ StyledRect {
     property color colour: Colours.palette.m3secondary
     readonly property alias items: iconColumn
 
+    readonly property bool isHorizontal: Config.bar.position === "top" || Config.bar.position === "bottom"
+
     color: Colours.tPalette.m3surfaceContainer
     radius: Tokens.rounding.full
 
     clip: true
-    implicitWidth: Tokens.sizes.bar.innerWidth
-    implicitHeight: iconColumn.implicitHeight + Tokens.padding.normal * 2 - (Config.bar.status.showLockStatus && !Hypr.capsLock && !Hypr.numLock ? iconColumn.spacing : 0)
+    implicitWidth: isHorizontal ? (iconColumn.implicitWidth + Tokens.padding.normal * 2 - (Config.bar.status.showLockStatus && !Hypr.capsLock && !Hypr.numLock ? iconColumn.spacing : 0)) : Tokens.sizes.bar.innerWidth
+    implicitHeight: isHorizontal ? Tokens.sizes.bar.innerWidth : (iconColumn.implicitHeight + Tokens.padding.normal * 2 - (Config.bar.status.showLockStatus && !Hypr.capsLock && !Hypr.numLock ? iconColumn.spacing : 0))
 
-    ColumnLayout {
+    GridLayout {
         id: iconColumn
 
         anchors.left: parent.left
         anchors.right: parent.right
-        anchors.bottom: parent.bottom
-        anchors.bottomMargin: Tokens.padding.normal
+        anchors.bottom: isHorizontal ? undefined : parent.bottom
+        anchors.bottomMargin: isHorizontal ? 0 : Tokens.padding.normal
+        anchors.top: isHorizontal ? parent.top : undefined
+        anchors.topMargin: isHorizontal ? Tokens.padding.normal : 0
+        anchors.leftMargin: isHorizontal ? Tokens.padding.normal : 0
+        anchors.rightMargin: isHorizontal ? Tokens.padding.normal : 0
+        anchors.verticalCenter: isHorizontal ? parent.verticalCenter : undefined
 
-        spacing: Tokens.spacing.smaller / 2
+        columns: isHorizontal ? -1 : 1
+        rows: isHorizontal ? 1 : -1
+        flow: isHorizontal ? GridLayout.LeftToRight : GridLayout.TopToBottom
+
+        columnSpacing: Tokens.spacing.smaller / 2
+        rowSpacing: Tokens.spacing.smaller / 2
+        readonly property real spacing: isHorizontal ? columnSpacing : rowSpacing
 
         // Lock keys status
         WrappedLoader {
             name: "lockstatus"
             active: Config.bar.status.showLockStatus
 
-            sourceComponent: ColumnLayout {
-                spacing: 0
+            sourceComponent: GridLayout {
+                columns: isHorizontal ? -1 : 1
+                rows: isHorizontal ? 1 : -1
+                flow: isHorizontal ? GridLayout.LeftToRight : GridLayout.TopToBottom
+                columnSpacing: 0
+                rowSpacing: 0
 
                 Item {
-                    implicitWidth: capslockIcon.implicitWidth
-                    implicitHeight: Hypr.capsLock ? capslockIcon.implicitHeight : 0
+                    implicitWidth: isHorizontal ? (Hypr.capsLock ? capslockIcon.implicitWidth : 0) : capslockIcon.implicitWidth
+                    implicitHeight: isHorizontal ? capslockIcon.implicitHeight : (Hypr.capsLock ? capslockIcon.implicitHeight : 0)
 
                     MaterialIcon {
                         id: capslockIcon
@@ -66,15 +83,21 @@ StyledRect {
                     }
 
                     Behavior on implicitHeight {
+                        enabled: !isHorizontal
+                        Anim {}
+                    }
+                    Behavior on implicitWidth {
+                        enabled: isHorizontal
                         Anim {}
                     }
                 }
 
                 Item {
-                    Layout.topMargin: Hypr.capsLock && Hypr.numLock ? iconColumn.spacing : 0
+                    Layout.topMargin: !isHorizontal && Hypr.capsLock && Hypr.numLock ? iconColumn.spacing : 0
+                    Layout.leftMargin: isHorizontal && Hypr.capsLock && Hypr.numLock ? iconColumn.spacing : 0
 
-                    implicitWidth: numlockIcon.implicitWidth
-                    implicitHeight: Hypr.numLock ? numlockIcon.implicitHeight : 0
+                    implicitWidth: isHorizontal ? (Hypr.numLock ? numlockIcon.implicitWidth : 0) : numlockIcon.implicitWidth
+                    implicitHeight: isHorizontal ? numlockIcon.implicitHeight : (Hypr.numLock ? numlockIcon.implicitHeight : 0)
 
                     MaterialIcon {
                         id: numlockIcon
@@ -97,6 +120,11 @@ StyledRect {
                     }
 
                     Behavior on implicitHeight {
+                        enabled: !isHorizontal
+                        Anim {}
+                    }
+                    Behavior on implicitWidth {
+                        enabled: isHorizontal
                         Anim {}
                     }
                 }
@@ -166,13 +194,18 @@ StyledRect {
 
         // Bluetooth section
         WrappedLoader {
-            Layout.preferredHeight: implicitHeight
+            Layout.preferredWidth: isHorizontal ? implicitWidth : -1
+            Layout.preferredHeight: isHorizontal ? -1 : implicitHeight
 
             name: "bluetooth"
             active: Config.bar.status.showBluetooth
 
-            sourceComponent: ColumnLayout {
-                spacing: Tokens.spacing.smaller / 2
+            sourceComponent: GridLayout {
+                columns: isHorizontal ? -1 : 1
+                rows: isHorizontal ? 1 : -1
+                flow: isHorizontal ? GridLayout.LeftToRight : GridLayout.TopToBottom
+                columnSpacing: Tokens.spacing.smaller / 2
+                rowSpacing: Tokens.spacing.smaller / 2
 
                 // Bluetooth icon
                 MaterialIcon {
@@ -226,6 +259,11 @@ StyledRect {
             }
 
             Behavior on Layout.preferredHeight {
+                enabled: !isHorizontal
+                Anim {}
+            }
+            Behavior on Layout.preferredWidth {
+                enabled: isHorizontal
                 Anim {}
             }
         }
@@ -265,7 +303,7 @@ StyledRect {
         required property string name
 
         asynchronous: true
-        Layout.alignment: Qt.AlignHCenter
+        Layout.alignment: isHorizontal ? Qt.AlignVCenter : Qt.AlignHCenter
         visible: active
     }
 }

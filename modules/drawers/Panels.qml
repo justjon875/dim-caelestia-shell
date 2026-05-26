@@ -17,6 +17,7 @@ Item {
     id: root
 
     required property ShellScreen screen
+    Config.screen: screen.name
     required property DrawerVisibilities visibilities
     required property Bar.BarWrapper bar
     required property real borderThickness
@@ -34,16 +35,25 @@ Item {
     readonly property alias toasts: toasts
     readonly property alias sidebar: sidebar
 
+    readonly property real leftMargin: anchors.leftMargin
+    readonly property real rightMargin: anchors.rightMargin
+    readonly property real topMargin: anchors.topMargin
+    readonly property real bottomMargin: anchors.bottomMargin
+
     anchors.fill: parent
-    anchors.margins: borderThickness
-    anchors.leftMargin: bar.implicitWidth
+    anchors.leftMargin: Config.bar.position === "left" ? bar.implicitWidth : borderThickness
+    anchors.rightMargin: Config.bar.position === "right" ? bar.implicitWidth : borderThickness
+    anchors.topMargin: Config.bar.position === "top" ? bar.implicitHeight : borderThickness
+    anchors.bottomMargin: Config.bar.position === "bottom" ? bar.implicitHeight : borderThickness
 
     Item {
         id: osdWrapper
 
         anchors.verticalCenter: parent.verticalCenter
-        anchors.right: parent.right
-        anchors.rightMargin: sessionWrapper.anchors.rightMargin + session.width * (1 - session.offsetScale)
+        anchors.left: Config.bar.position === "right" ? parent.left : undefined
+        anchors.right: Config.bar.position !== "right" ? parent.right : undefined
+        anchors.leftMargin: Config.bar.position === "right" ? sidebar.width * (1 - sidebar.offsetScale) + session.width * (1 - session.offsetScale) : 0
+        anchors.rightMargin: Config.bar.position !== "right" ? sidebar.width * (1 - sidebar.offsetScale) + session.width * (1 - session.offsetScale) : 0
         clip: sidebar.visible || session.visible
 
         implicitWidth: osd.implicitWidth * (1 - osd.offsetScale)
@@ -57,7 +67,8 @@ Item {
             sidebarOrSessionVisible: sidebar.visible || session.visible
 
             anchors.verticalCenter: parent.verticalCenter
-            anchors.right: parent.right
+            anchors.left: Config.bar.position === "right" ? parent.left : undefined
+            anchors.right: Config.bar.position !== "right" ? parent.right : undefined
         }
     }
 
@@ -70,15 +81,18 @@ Item {
         sessionPanel: sessionWrapper
 
         anchors.top: parent.top
-        anchors.right: parent.right
+        anchors.left: Config.bar.position === "right" ? parent.left : undefined
+        anchors.right: Config.bar.position !== "right" ? parent.right : undefined
     }
 
     Item {
         id: sessionWrapper
 
         anchors.verticalCenter: parent.verticalCenter
-        anchors.right: parent.right
-        anchors.rightMargin: sidebar.width * (1 - sidebar.offsetScale)
+        anchors.left: Config.bar.position === "right" ? parent.left : undefined
+        anchors.right: Config.bar.position !== "right" ? parent.right : undefined
+        anchors.leftMargin: Config.bar.position === "right" ? sidebar.width * (1 - sidebar.offsetScale) : 0
+        anchors.rightMargin: Config.bar.position !== "right" ? sidebar.width * (1 - sidebar.offsetScale) : 0
         clip: sidebar.visible
 
         implicitWidth: session.implicitWidth * (1 - session.offsetScale)
@@ -91,7 +105,8 @@ Item {
             sidebarVisible: sidebar.visible
 
             anchors.verticalCenter: parent.verticalCenter
-            anchors.right: parent.right
+            anchors.left: Config.bar.position === "right" ? parent.left : undefined
+            anchors.right: Config.bar.position !== "right" ? parent.right : undefined
         }
     }
 
@@ -119,6 +134,7 @@ Item {
         id: popoutsWrapper
 
         screen: root.screen
+        bar: root.bar
         borderThickness: root.borderThickness
     }
 
@@ -130,14 +146,16 @@ Item {
         popouts: popoutsWrapper.content
 
         anchors.bottom: parent.bottom
-        anchors.right: parent.right
+        anchors.left: Config.bar.position === "right" ? parent.left : undefined
+        anchors.right: Config.bar.position !== "right" ? parent.right : undefined
     }
 
     Toasts.Toasts {
         id: toasts
 
         anchors.bottom: sidebar.visible ? parent.bottom : utilities.top
-        anchors.right: sidebar.left
+        anchors.left: Config.bar.position === "right" ? sidebar.right : undefined
+        anchors.right: Config.bar.position !== "right" ? sidebar.left : undefined
         anchors.margins: Tokens.padding.normal
     }
 
@@ -148,6 +166,7 @@ Item {
 
         anchors.top: notifications.bottom
         anchors.bottom: utilities.top
-        anchors.right: parent.right
+        anchors.left: Config.bar.position === "right" ? parent.left : undefined
+        anchors.right: Config.bar.position !== "right" ? parent.right : undefined
     }
 }

@@ -3,6 +3,7 @@ pragma ComponentBehavior: Bound
 import ".."
 import "../components"
 import QtQuick
+import QtQuick.Controls
 import QtQuick.Layouts
 import Quickshell
 import Quickshell.Widgets
@@ -27,6 +28,7 @@ Item {
     property bool persistent: Config.bar.persistent ?? true
     property bool showOnHover: Config.bar.showOnHover ?? true
     property int dragThreshold: Config.bar.dragThreshold ?? 20
+    property string position: Config.bar.position ?? "left"
     property bool showAudio: Config.bar.status.showAudio ?? true
     property bool showMicrophone: Config.bar.status.showMicrophone ?? true
     property bool showKbLayout: Config.bar.status.showKbLayout ?? false
@@ -62,6 +64,7 @@ Item {
         GlobalConfig.bar.persistent = root.persistent;
         GlobalConfig.bar.showOnHover = root.showOnHover;
         GlobalConfig.bar.dragThreshold = root.dragThreshold;
+        GlobalConfig.bar.position = root.position;
         GlobalConfig.bar.status.showAudio = root.showAudio;
         GlobalConfig.bar.status.showMicrophone = root.showMicrophone;
         GlobalConfig.bar.status.showKbLayout = root.showKbLayout;
@@ -606,6 +609,89 @@ Item {
                                 onToggled: checked => {
                                     root.showOnHover = checked;
                                     root.saveConfig();
+                                }
+                            }
+
+                            SplitButtonRow {
+                                id: positionSelector
+
+                                function syncActiveItem(): void {
+                                    if (root.position === "left") {
+                                        active = positionLeftItem;
+                                        return;
+                                    }
+                                    if (root.position === "right") {
+                                        active = positionRightItem;
+                                        return;
+                                    }
+                                    if (root.position === "top") {
+                                        active = positionTopItem;
+                                        return;
+                                    }
+                                    active = positionBottomItem;
+                                }
+
+                                Layout.fillWidth: true
+                                z: expanded ? 100 : 0
+                                label: qsTr("Position")
+                                menuItems: [positionLeftItem, positionRightItem, positionTopItem, positionBottomItem]
+
+                                Component.onCompleted: syncActiveItem()
+
+                                Connections {
+                                    function onPositionChanged(): void {
+                                        positionSelector.syncActiveItem();
+                                    }
+
+                                    target: root
+                                }
+
+                                MenuItem {
+                                    id: positionLeftItem
+
+                                    text: qsTr("Left")
+                                    icon: "align_horizontal_left"
+                                    activeText: qsTr("Left")
+                                    onClicked: {
+                                        root.position = "left";
+                                        root.saveConfig();
+                                    }
+                                }
+
+                                MenuItem {
+                                    id: positionRightItem
+
+                                    text: qsTr("Right")
+                                    icon: "align_horizontal_right"
+                                    activeText: qsTr("Right")
+                                    onClicked: {
+                                        root.position = "right";
+                                        root.saveConfig();
+                                    }
+                                }
+
+                                MenuItem {
+                                    id: positionTopItem
+
+                                    text: qsTr("Top")
+                                    icon: "vertical_align_top"
+                                    activeText: qsTr("Top")
+                                    onClicked: {
+                                        root.position = "top";
+                                        root.saveConfig();
+                                    }
+                                }
+
+                                MenuItem {
+                                    id: positionBottomItem
+
+                                    text: qsTr("Bottom")
+                                    icon: "vertical_align_bottom"
+                                    activeText: qsTr("Bottom")
+                                    onClicked: {
+                                        root.position = "bottom";
+                                        root.saveConfig();
+                                    }
                                 }
                             }
 
