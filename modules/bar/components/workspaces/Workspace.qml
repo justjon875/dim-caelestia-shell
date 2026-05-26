@@ -43,6 +43,7 @@ GridLayout {
         Layout.alignment: isHorizontal ? (Qt.AlignVCenter | Qt.AlignLeft) : (Qt.AlignHCenter | Qt.AlignTop)
         Layout.preferredWidth: isHorizontal ? (Tokens.sizes.bar.innerWidth - Tokens.padding.small * 2) : -1
         Layout.preferredHeight: isHorizontal ? -1 : (Tokens.sizes.bar.innerWidth - Tokens.padding.small * 2)
+        Layout.leftMargin: isHorizontal ? Math.floor(Tokens.spacing.small / 2) + 1 : 0
 
         animate: true
         text: {
@@ -72,7 +73,7 @@ GridLayout {
         Layout.fillWidth: isHorizontal && enabled
         Layout.fillHeight: !isHorizontal && enabled
         Layout.topMargin: isHorizontal ? 0 : -Tokens.sizes.bar.innerWidth / 10
-        Layout.leftMargin: isHorizontal ? Tokens.spacing.small : 0
+        Layout.leftMargin: isHorizontal ? -Tokens.sizes.bar.innerWidth / 10 : 0
 
         visible: active
         active: root.hasWindows
