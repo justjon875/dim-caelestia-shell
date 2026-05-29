@@ -68,7 +68,7 @@ Item {
                 VisualiserBars {
                     id: bars
 
-                    readonly property real baseMargin: root.barExclusiveZone + root.visualiserSpacing
+                    readonly property real baseMargin: root.barExclusiveZone
 
                     anchors.fill: parent
                     anchors.margins: Config.border.thickness

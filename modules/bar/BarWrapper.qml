@@ -145,9 +145,9 @@ Item {
                 AnchorChanges {
                     target: content
                     anchors.left: parent.left
-                    anchors.right: parent.right
-                    anchors.top: parent.top
-                    anchors.bottom: undefined
+                    anchors.right: undefined
+                    anchors.top: undefined
+                    anchors.bottom: parent.bottom
                 }
             },
             State {
@@ -157,9 +157,9 @@ Item {
                 AnchorChanges {
                     target: content
                     anchors.left: parent.left
-                    anchors.right: parent.right
-                    anchors.top: undefined
-                    anchors.bottom: parent.bottom
+                    anchors.right: undefined
+                    anchors.top: parent.top
+                    anchors.bottom: undefined
                 }
             }
         ]
