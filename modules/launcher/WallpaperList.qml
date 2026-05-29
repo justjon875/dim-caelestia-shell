@@ -26,10 +26,17 @@ PathView {
         const barThickness = isBarHorizontal ? panels.bar.implicitHeight : panels.bar.implicitWidth;
         const barMargins = Math.max(Config.border.thickness, barThickness);
 
-        // Only subtract utilities/sidebar widths for vertical bars (they affect horizontal space)
+        // Subtract sidebar/utilities width when visible (they take horizontal space)
         let sidebarReduction = 0;
-        if (!isBarHorizontal && (visibilities.utilities || visibilities.sidebar) && panels.utilities.implicitWidth > sidebarReduction)
-            sidebarReduction = panels.utilities.implicitWidth;
+        if ((visibilities.sidebar || visibilities.utilities) && panels.utilities.implicitWidth > sidebarReduction) {
+            if (!isBarHorizontal) {
+                // Vertical bars: sidebar takes space from the side
+                sidebarReduction = panels.utilities.implicitWidth;
+            } else if (panels.sidebar.visible) {
+                // Horizontal bars: sidebar takes space on the right side
+                sidebarReduction = panels.sidebar.implicitWidth;
+            }
+        }
 
         // For horizontal bars with popouts, calculate how much horizontal space the popout takes
         let popoutReduction = 0;
@@ -42,7 +49,6 @@ PathView {
             const screenCenter = screen.width / 2;
 
             // Calculate how far the popout extends from screen center in each direction
-            // The launcher is centered, so it needs to shrink by the larger extension
             const extendLeft = popoutLeft < screenCenter ? screenCenter - popoutLeft : 0;
             const extendRight = popoutRight > screenCenter ? popoutRight - screenCenter : 0;
             popoutReduction = Math.max(extendLeft, extendRight);
