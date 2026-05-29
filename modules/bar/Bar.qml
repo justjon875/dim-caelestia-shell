@@ -80,7 +80,7 @@ GridLayout {
                 popouts.hasCurrent = false;
                 tray.expanded = true;
             }
-        } else if (id === "activeWindow" && Config.bar.popouts.activeWindow && Config.bar.activeWindow.showOnHover && Hypr.activeToplevel) {
+        } else if (id === "activeWindow" && Config.bar.popouts.activeWindow && Config.bar.activeWindow.showOnHover && Hypr.activeToplevel && !visibilities.launcher) {
             const item = ch.item as Item;
             if (item) {
                 const relPos = pos - (isHorizontal ? ch.x : ch.y);
