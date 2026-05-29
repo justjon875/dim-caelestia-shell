@@ -123,7 +123,7 @@ Item {
                     anchors.left: undefined
                     anchors.right: parent.right
                     anchors.top: parent.top
-                    anchors.bottom: undefined
+                    anchors.bottom: parent.bottom
                 }
             },
             State {
@@ -135,7 +135,7 @@ Item {
                     anchors.left: parent.left
                     anchors.right: undefined
                     anchors.top: parent.top
-                    anchors.bottom: undefined
+                    anchors.bottom: parent.bottom
                 }
             },
             State {
@@ -145,9 +145,9 @@ Item {
                 AnchorChanges {
                     target: content
                     anchors.left: parent.left
-                    anchors.right: undefined
-                    anchors.top: undefined
-                    anchors.bottom: parent.bottom
+                    anchors.right: parent.right
+                    anchors.top: parent.top
+                    anchors.bottom: undefined
                 }
             },
             State {
@@ -157,9 +157,9 @@ Item {
                 AnchorChanges {
                     target: content
                     anchors.left: parent.left
-                    anchors.right: undefined
-                    anchors.top: parent.top
-                    anchors.bottom: undefined
+                    anchors.right: parent.right
+                    anchors.top: undefined
+                    anchors.bottom: parent.bottom
                 }
             }
         ]

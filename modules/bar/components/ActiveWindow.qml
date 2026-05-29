@@ -42,6 +42,8 @@ Item {
     implicitWidth: bar.isHorizontal ? (icon.implicitWidth + current.width + current.anchors.leftMargin) : Math.max(icon.implicitWidth, current.width)
     implicitHeight: bar.isHorizontal ? Math.max(icon.implicitHeight, current.height) : (icon.implicitHeight + current.height + current.anchors.topMargin)
 
+    anchors.fill: parent
+
     Loader {
         anchors.fill: parent
         active: !Config.bar.activeWindow.showOnHover
@@ -60,30 +62,38 @@ Item {
                     popouts.hasCurrent = false;
                 } else if (Hypr.activeToplevel) {
                     popouts.currentName = "activewindow";
-                    popouts.currentCenter = bar.isHorizontal ? root.mapToItem(null, root.implicitWidth / 2, 0).x : root.mapToItem(null, 0, root.implicitHeight / 2).y;
+                    popouts.currentCenter = bar.isHorizontal ? container.mapToItem(null, container.width / 2, 0).x : container.mapToItem(null, 0, container.height / 2).y;
                     popouts.hasCurrent = true;
                 }
             }
         }
     }
 
-    MaterialIcon {
-        id: icon
+    Item {
+        id: container
 
-        anchors.horizontalCenter: bar.isHorizontal ? undefined : parent.horizontalCenter
-        anchors.verticalCenter: bar.isHorizontal ? parent.verticalCenter : undefined
+        anchors.centerIn: parent
+        width: bar.isHorizontal ? (icon.implicitWidth + current.width + current.anchors.leftMargin) : Math.max(icon.implicitWidth, current.width)
+        height: bar.isHorizontal ? Math.max(icon.implicitHeight, current.height) : (icon.implicitHeight + current.height + current.anchors.topMargin)
 
-        animate: true
-        text: Icons.getAppCategoryIcon(Hypr.activeToplevel?.lastIpcObject.class, "desktop_windows")
-        color: root.colour
-    }
+        MaterialIcon {
+            id: icon
 
-    Title {
-        id: text1
-    }
+            anchors.horizontalCenter: bar.isHorizontal ? undefined : parent.horizontalCenter
+            anchors.verticalCenter: bar.isHorizontal ? parent.verticalCenter : undefined
 
-    Title {
-        id: text2
+            animate: true
+            text: Icons.getAppCategoryIcon(Hypr.activeToplevel?.lastIpcObject.class, "desktop_windows")
+            color: root.colour
+        }
+
+        Title {
+            id: text1
+        }
+
+        Title {
+            id: text2
+        }
     }
 
     TextMetrics {
