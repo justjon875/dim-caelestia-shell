@@ -267,13 +267,21 @@ Item {
 
         Component.onCompleted: {
             wsId = modelData.id;
-            icon = Icons.getSpecialWsIcon(modelData.name);
+            icon = Config.bar.workspaces.useIcon
+                ? Icons.getSpecialWsMaterialIcon(modelData.name)
+                : Icons.getSpecialWsIcon(modelData.name);
             hasWindows = Config.bar.workspaces.showWindowsOnSpecialWorkspaces && modelData.lastIpcObject.windows > 0;
         }
 
         Connections {
             function onIdChanged(): void { if (ws.modelData) ws.wsId = ws.modelData.id; }
-            function onNameChanged(): void { if (ws.modelData) ws.icon = Icons.getSpecialWsIcon(ws.modelData.name); }
+            function onNameChanged(): void {
+                if (ws.modelData) {
+                    ws.icon = Config.bar.workspaces.useIcon
+                        ? Icons.getSpecialWsMaterialIcon(ws.modelData.name)
+                        : Icons.getSpecialWsIcon(ws.modelData.name);
+                }
+            }
             function onLastIpcObjectChanged(): void {
                 if (ws.modelData) {
                     ws.hasWindows = root.Config.bar.workspaces.showWindowsOnSpecialWorkspaces && ws.modelData.lastIpcObject.windows > 0;
@@ -291,14 +299,26 @@ Item {
             target: root.Config.bar.workspaces
         }
 
+        Connections {
+            function onUseIconChanged(): void {
+                if (ws.modelData) {
+                    ws.icon = Config.bar.workspaces.useIcon
+                        ? Icons.getSpecialWsMaterialIcon(ws.modelData.name)
+                        : Icons.getSpecialWsIcon(ws.modelData.name);
+                }
+            }
+            target: root.Config.bar.workspaces
+        }
+
         Loader {
             id: label
 
             asynchronous: true
 
-            Layout.alignment: isHorizontal ? (Qt.AlignVCenter | Qt.AlignLeft) : (Qt.AlignHCenter | Qt.AlignTop)
+            Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
             Layout.preferredWidth: isHorizontal ? (Tokens.sizes.bar.innerWidth - Tokens.padding.small * 2) : -1
             Layout.preferredHeight: isHorizontal ? -1 : (Tokens.sizes.bar.innerWidth - Tokens.padding.small * 2)
+            Layout.leftMargin: 0
 
             sourceComponent: ws.icon.length === 1 ? letterComp : iconComp
 
@@ -307,6 +327,7 @@ Item {
                 MaterialIcon {
                     fill: 1
                     text: ws.icon
+                    horizontalAlignment: StyledText.AlignHCenter
                     verticalAlignment: Qt.AlignVCenter
                 }
             }
