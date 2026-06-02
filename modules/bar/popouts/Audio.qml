@@ -36,72 +36,96 @@ Item {
         spacing: Tokens.spacing.normal
 
         StyledText {
-            text: qsTr("Output device")
+            Layout.leftMargin: Tokens.padding.small
+            text: qsTr("Audio")
             font.weight: 500
         }
 
-        Repeater {
-            model: Audio.sinks
-
-            StyledRadioButton {
-                id: control
-
-                required property PwNode modelData
-
-                ButtonGroup.group: sinks
-                checked: Audio.sink?.id === modelData.id
-                onClicked: Audio.setAudioSink(modelData)
-                text: modelData.description
-            }
-        }
-
-        StyledText {
-            Layout.topMargin: Tokens.spacing.smaller
-            text: qsTr("Input device")
-            font.weight: 500
-        }
-
-        Repeater {
-            model: Audio.sources
-
-            StyledRadioButton {
-                required property PwNode modelData
-
-                ButtonGroup.group: sources
-                checked: Audio.source?.id === modelData.id
-                onClicked: Audio.setAudioSource(modelData)
-                text: modelData.description
-            }
-        }
-
-        StyledText {
-            Layout.topMargin: Tokens.spacing.smaller
-            Layout.bottomMargin: -Tokens.spacing.small / 2
-            text: qsTr("Volume (%1)").arg(Audio.muted ? qsTr("Muted") : `${Math.round(Audio.volume * 100)}%`)
-            font.weight: 500
-        }
-
-        CustomMouseArea {
+        StyledRect {
             Layout.fillWidth: true
-            implicitHeight: Tokens.padding.normal * 3
+            implicitHeight: cardLayout.implicitHeight + Tokens.padding.large * 2
+            radius: Tokens.rounding.normal
+            color: Colours.tPalette.m3surfaceContainer
+            clip: true
 
-            onWheel: event => {
-                if (event.angleDelta.y > 0)
-                    Audio.incrementVolume();
-                else if (event.angleDelta.y < 0)
-                    Audio.decrementVolume();
-            }
+            ColumnLayout {
+                id: cardLayout
 
-            StyledSlider {
                 anchors.left: parent.left
                 anchors.right: parent.right
-                implicitHeight: parent.implicitHeight
+                anchors.top: parent.top
+                anchors.margins: Tokens.padding.large
+                spacing: Tokens.spacing.normal
 
-                value: Audio.volume
-                onMoved: Audio.setVolume(value)
+                StyledText {
+                    text: qsTr("Output device")
+                    font.weight: 500
+                }
 
-                Behavior on value {
-                    Anim {}
+                Repeater {
+                    model: Audio.sinks
+
+                    StyledRadioButton {
+                        id: control
+
+                        required property PwNode modelData
+
+                        ButtonGroup.group: sinks
+                        checked: Audio.sink?.id === modelData.id
+                        onClicked: Audio.setAudioSink(modelData)
+                        text: modelData.description
+                    }
+                }
+
+                StyledText {
+                    Layout.topMargin: Tokens.spacing.smaller
+                    text: qsTr("Input device")
+                    font.weight: 500
+                }
+
+                Repeater {
+                    model: Audio.sources
+
+                    StyledRadioButton {
+                        required property PwNode modelData
+
+                        ButtonGroup.group: sources
+                        checked: Audio.source?.id === modelData.id
+                        onClicked: Audio.setAudioSource(modelData)
+                        text: modelData.description
+                    }
+                }
+
+                StyledText {
+                    Layout.topMargin: Tokens.spacing.smaller
+                    Layout.bottomMargin: -Tokens.spacing.small / 2
+                    text: qsTr("Volume (%1)").arg(Audio.muted ? qsTr("Muted") : `${Math.round(Audio.volume * 100)}%`)
+                    font.weight: 500
+                }
+
+                CustomMouseArea {
+                    Layout.fillWidth: true
+                    implicitHeight: Tokens.padding.normal * 3
+
+                    onWheel: event => {
+                        if (event.angleDelta.y > 0)
+                            Audio.incrementVolume();
+                        else if (event.angleDelta.y < 0)
+                            Audio.decrementVolume();
+                    }
+
+                    StyledSlider {
+                        anchors.left: parent.left
+                        anchors.right: parent.right
+                        implicitHeight: parent.implicitHeight
+
+                        value: Audio.volume
+                        onMoved: Audio.setVolume(value)
+
+                        Behavior on value {
+                            Anim {}
+                        }
+                    }
                 }
             }
         }

@@ -16,23 +16,39 @@ ColumnLayout {
 
     StyledText {
         Layout.topMargin: Tokens.padding.normal
-        Layout.rightMargin: Tokens.padding.small
+        Layout.leftMargin: Tokens.padding.small
         text: qsTr("Notifications")
         font.weight: 500
     }
 
-    Toggle {
-        label: qsTr("Do not disturb")
-        checked: Notifs.dnd
-        toggle.onToggled: Notifs.dnd = checked
-    }
+    StyledRect {
+        Layout.fillWidth: true
+        implicitHeight: cardLayout.implicitHeight + Tokens.padding.normal * 2
+        radius: Tokens.rounding.normal
+        color: Colours.tPalette.m3surfaceContainer
+        clip: true
 
-    StyledText {
-        Layout.topMargin: Tokens.spacing.small
-        Layout.rightMargin: Tokens.padding.small
-        text: Notifs.dnd ? qsTr("Notifications off") : qsTr("%1 unread").arg(Notifs.notClosed.length)
-        color: Colours.palette.m3onSurfaceVariant
-        font.pointSize: Tokens.font.size.small
+        ColumnLayout {
+            id: cardLayout
+
+            anchors.left: parent.left
+            anchors.right: parent.right
+            anchors.top: parent.top
+            anchors.margins: Tokens.padding.normal
+            spacing: Tokens.spacing.normal
+
+            Toggle {
+                label: qsTr("Do not disturb")
+                checked: Notifs.dnd
+                toggle.onToggled: Notifs.dnd = checked
+            }
+
+            StyledText {
+                text: Notifs.dnd ? qsTr("Notifications off") : qsTr("%1 unread").arg(Notifs.notClosed.length)
+                color: Colours.palette.m3onSurfaceVariant
+                font.pointSize: Tokens.font.size.small
+            }
+        }
     }
 
     IconTextButton {

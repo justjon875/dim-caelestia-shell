@@ -7,10 +7,34 @@ ColumnLayout {
     spacing: Tokens.spacing.small
 
     StyledText {
-        text: qsTr("Capslock: %1").arg(Hypr.capsLock ? "Enabled" : "Disabled")
+        Layout.leftMargin: Tokens.padding.small
+        text: qsTr("Lock Status")
+        font.weight: 500
     }
 
-    StyledText {
-        text: qsTr("Numlock: %1").arg(Hypr.numLock ? "Enabled" : "Disabled")
+    StyledRect {
+        Layout.fillWidth: true
+        implicitHeight: cardLayout.implicitHeight + Tokens.padding.normal * 2
+        radius: Tokens.rounding.normal
+        color: Colours.tPalette.m3surfaceContainer
+        clip: true
+
+        ColumnLayout {
+            id: cardLayout
+
+            anchors.left: parent.left
+            anchors.right: parent.right
+            anchors.top: parent.top
+            anchors.margins: Tokens.padding.normal
+            spacing: Tokens.spacing.small
+
+            StyledText {
+                text: qsTr("Capslock: %1").arg(Hypr.capsLock ? "Enabled" : "Disabled")
+            }
+
+            StyledText {
+                text: qsTr("Numlock: %1").arg(Hypr.numLock ? "Enabled" : "Disabled")
+            }
+        }
     }
 }

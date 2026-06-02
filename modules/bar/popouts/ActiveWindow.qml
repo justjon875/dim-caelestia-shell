@@ -12,15 +12,23 @@ Item {
 
     required property PopoutState popouts
 
-    implicitWidth: Tokens.sizes.bar.windowPreviewSize
-    implicitHeight: child.implicitHeight
+    implicitWidth: Tokens.sizes.bar.windowPreviewSize + Tokens.padding.normal * 2
+    implicitHeight: child.implicitHeight + Tokens.padding.normal * 2
 
-    Column {
-        id: child
+    StyledRect {
+        anchors.fill: parent
+        radius: Tokens.rounding.normal
+        color: Colours.tPalette.m3surfaceContainer
+        clip: true
 
-        anchors.centerIn: parent
-        width: parent.width
-        spacing: Tokens.spacing.normal
+        Column {
+            id: child
+
+            anchors.left: parent.left
+            anchors.right: parent.right
+            anchors.top: parent.top
+            anchors.margins: Tokens.padding.normal
+            spacing: Tokens.spacing.normal
 
         RowLayout {
             id: detailsRow
@@ -99,4 +107,5 @@ Item {
             }
         }
     }
+}
 }
