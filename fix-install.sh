@@ -72,11 +72,11 @@ legacy_libs=(
 for lib in "${legacy_libs[@]}"; do
     if [ -f "$lib" ]; then
         echo -e "${YELLOW}Removing leftover library: $lib${NC}"
-        sudo rm -f "$lib"
+        pkexec rm -f "$lib"
     fi
 done
 
-sudo cmake --install build
+pkexec cmake --install "$(pwd)/build"
 
 echo -e "${GREEN}===================================================${NC}"
 echo -e "${GREEN}       Installation & Fix Completed Successfully!   ${NC}"

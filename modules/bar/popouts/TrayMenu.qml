@@ -82,7 +82,8 @@ StackView {
             let groups = [];
             let currentGroup = [];
             for (let i = 0; i < count; i++) {
-                let child = menuOpener.children[i];
+                let child = menuOpener.children.get(i);
+                if (!child) continue;
                 if (child.isSeparator) {
                     if (currentGroup.length > 0) {
                         groups.push(currentGroup);
@@ -114,7 +115,9 @@ StackView {
                 Column {
                     id: groupColumn
 
-                    anchors.fill: parent
+                    anchors.left: parent.left
+                    anchors.right: parent.right
+                    anchors.top: parent.top
                     anchors.margins: Tokens.padding.smaller
                     spacing: Tokens.spacing.small
 
