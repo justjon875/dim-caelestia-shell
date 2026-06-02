@@ -429,7 +429,7 @@ ColumnLayout {
 
                         anchors.centerIn: parent
                         animate: true
-                        text: root.session.bt.editingAdapterName ? "check_circle" : "edit"
+                        text: root.session.bt.editingAdapterName ? "radio_button_checked" : "edit"
                         color: root.session.bt.editingAdapterName ? Colours.palette.m3onPrimary : Colours.palette.m3onSurface
                     }
 

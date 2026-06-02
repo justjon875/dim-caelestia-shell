@@ -78,7 +78,7 @@ GridLayout {
         id: iconComponent
 
         MaterialIcon {
-            text: root.activeWsId === root.ws ? "check_circle" : "circle"
+            text: root.activeWsId === root.ws ? "radio_button_checked" : "radio_button_unchecked"
             color: Config.bar.workspaces.occupiedBg || root.isOccupied || root.activeWsId === root.ws ? Colours.palette.m3onSurface : Colours.layer(Colours.palette.m3outlineVariant, 2)
             horizontalAlignment: StyledText.AlignHCenter
             verticalAlignment: Qt.AlignVCenter

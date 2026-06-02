@@ -15,7 +15,7 @@ MouseArea {
 
     property real pressX: width / 2
     property real pressY: height / 2
-    property real circleRadius
+    property real radio_button_uncheckedRadius
 
     property alias color: base.color
     property alias radius: base.radius
@@ -45,8 +45,8 @@ MouseArea {
         pressX = x;
         pressY = y;
         fadeAnim.complete();
-        circleRadius = 0;
-        circle.opacity = 0.1;
+        radio_button_uncheckedRadius = 0;
+        radio_button_unchecked.opacity = 0.1;
         rippleAnim.restart();
         endRadiusAtPress = endRadius;
     }
@@ -59,12 +59,12 @@ MouseArea {
     onPressed: e => press(e.x, e.y)
 
     onPressedChanged: {
-        if (!pressed && !rippleAnim.running && circle.opacity > 0)
+        if (!pressed && !rippleAnim.running && radio_button_unchecked.opacity > 0)
             fadeAnim.start();
     }
 
     onCircleRadiusChanged: {
-        if (!pressed && circleRadius > endRadiusAtPress * 0.99 && !fadeAnim.running)
+        if (!pressed && radio_button_uncheckedRadius > endRadiusAtPress * 0.99 && !fadeAnim.running)
             fadeAnim.start();
     }
 
@@ -73,7 +73,7 @@ MouseArea {
 
         alwaysRunToEnd: true
         target: root
-        property: "circleRadius"
+        property: "radio_button_uncheckedRadius"
         to: root.endRadius
         easing: Tokens.anim.expressiveSlowEffects
         duration: Tokens.anim.durations.expressiveSlowEffects * 2
@@ -82,7 +82,7 @@ MouseArea {
     Anim {
         id: fadeAnim
 
-        target: circle
+        target: radio_button_unchecked
         property: "opacity"
         to: 0
         easing: Tokens.anim.expressiveSlowEffects
@@ -100,7 +100,7 @@ MouseArea {
     }
 
     Shape {
-        id: circle
+        id: radio_button_unchecked
 
         anchors.fill: parent
         opacity: 0
@@ -113,7 +113,7 @@ MouseArea {
             fillGradient: RadialGradient {
                 centerX: root.pressX
                 centerY: root.pressY
-                centerRadius: root.circleRadius
+                centerRadius: root.radio_button_uncheckedRadius
                 focalX: centerX
                 focalY: centerY
 

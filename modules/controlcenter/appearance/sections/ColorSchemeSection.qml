@@ -86,7 +86,7 @@ CollapsibleSection {
                             id: iconPlaceholder
 
                             visible: false
-                            text: "circle"
+                            text: "radio_button_unchecked"
                             font.pointSize: Tokens.font.size.large
                         }
 

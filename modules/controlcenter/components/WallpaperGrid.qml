@@ -233,7 +233,7 @@ GridView {
                 anchors.margins: Tokens.padding.small
 
                 visible: isCurrent
-                text: "check_circle"
+                text: "radio_button_checked"
                 color: Colours.palette.m3primary
                 font.pointSize: Tokens.font.size.large
             }

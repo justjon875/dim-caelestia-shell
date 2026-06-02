@@ -292,7 +292,7 @@ StyledFlickable {
 
                                             anchors.centerIn: parent
                                             animate: true
-                                            text: root.session.bt.editingDeviceName ? "check_circle" : "edit"
+                                            text: root.session.bt.editingDeviceName ? "radio_button_checked" : "edit"
                                             color: root.session.bt.editingDeviceName ? Colours.palette.m3onPrimary : Colours.palette.m3onSurface
                                         }
 
