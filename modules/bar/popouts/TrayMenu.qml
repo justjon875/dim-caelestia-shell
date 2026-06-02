@@ -45,8 +45,8 @@ StackView {
         property bool isSubMenu
         property bool shown
 
-        padding: Tokens.padding.smaller
-        spacing: Tokens.spacing.small
+        padding: Tokens.padding.large
+        spacing: Tokens.spacing.large
 
         opacity: shown ? 1 : 0
         scale: shown ? 1 : 0.8
@@ -129,8 +129,8 @@ StackView {
 
                 required property var modelData
 
-                implicitWidth: Tokens.sizes.bar.trayMenuWidth + Tokens.padding.smaller * 2
-                implicitHeight: groupColumn.implicitHeight + Tokens.padding.smaller * 2
+                implicitWidth: Tokens.sizes.bar.trayMenuWidth + Tokens.padding.large * 2
+                implicitHeight: groupColumn.implicitHeight + Tokens.padding.large * 2
                 radius: Tokens.rounding.normal
                 color: Colours.tPalette.m3surfaceContainer
 
@@ -140,7 +140,7 @@ StackView {
                     anchors.left: parent.left
                     anchors.right: parent.right
                     anchors.top: parent.top
-                    anchors.margins: Tokens.padding.smaller
+                    anchors.margins: Tokens.padding.large
                     spacing: Tokens.spacing.small
 
                     Repeater {
@@ -168,9 +168,9 @@ StackView {
                                     implicitHeight: label.implicitHeight
 
                                     StateLayer {
-                                        anchors.margins: -Tokens.padding.small / 2
-                                        anchors.leftMargin: -Tokens.padding.smaller
-                                        anchors.rightMargin: -Tokens.padding.smaller
+                                        anchors.margins: -Tokens.padding.large / 2
+                                        anchors.leftMargin: -Tokens.padding.large
+                                        anchors.rightMargin: -Tokens.padding.large
 
                                         radius: item.radius
                                         disabled: !item.modelData.enabled
