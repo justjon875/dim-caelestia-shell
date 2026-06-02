@@ -13,7 +13,7 @@ Column {
     width: Tokens.sizes.bar.batteryWidth
 
     StyledText {
-        Layout.leftMargin: Tokens.padding.small
+        x: Tokens.padding.small
         text: qsTr("Battery")
         font.weight: 500
     }
