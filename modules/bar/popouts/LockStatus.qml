@@ -14,6 +14,7 @@ ColumnLayout {
 
     StyledRect {
         Layout.fillWidth: true
+        implicitWidth: cardLayout.implicitWidth + Tokens.padding.normal * 2
         implicitHeight: cardLayout.implicitHeight + Tokens.padding.normal * 2
         radius: Tokens.rounding.normal
         color: Colours.tPalette.m3surfaceContainer
