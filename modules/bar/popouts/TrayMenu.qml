@@ -45,8 +45,8 @@ StackView {
         property bool isSubMenu
         property bool shown
 
-        padding: Tokens.padding.large
-        spacing: Tokens.spacing.large
+        padding: Tokens.padding.smaller
+        spacing: Tokens.spacing.small
 
         opacity: shown ? 1 : 0
         scale: shown ? 1 : 0.8
@@ -129,8 +129,8 @@ StackView {
 
                 required property var modelData
 
-                implicitWidth: Tokens.sizes.bar.trayMenuWidth + Tokens.padding.large * 2
-                implicitHeight: groupColumn.implicitHeight + Tokens.padding.large * 2
+                implicitWidth: Tokens.sizes.bar.trayMenuWidth + Tokens.padding.normal * 2
+                implicitHeight: groupColumn.implicitHeight + Tokens.padding.normal * 2
                 radius: Tokens.rounding.normal
                 color: Colours.tPalette.m3surfaceContainer
 
@@ -140,7 +140,7 @@ StackView {
                     anchors.left: parent.left
                     anchors.right: parent.right
                     anchors.top: parent.top
-                    anchors.margins: Tokens.padding.large
+                    anchors.margins: Tokens.padding.normal
                     spacing: Tokens.spacing.small
 
                     Repeater {
@@ -168,9 +168,9 @@ StackView {
                                     implicitHeight: label.implicitHeight
 
                                     StateLayer {
-                                        anchors.margins: -Tokens.padding.large / 2
-                                        anchors.leftMargin: -Tokens.padding.large
-                                        anchors.rightMargin: -Tokens.padding.large
+                                        anchors.margins: -Tokens.padding.normal / 2
+                                        anchors.leftMargin: -Tokens.padding.normal
+                                        anchors.rightMargin: -Tokens.padding.normal
 
                                         radius: item.radius
                                         disabled: !item.modelData.enabled
