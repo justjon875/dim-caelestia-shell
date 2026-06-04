@@ -1,12 +1,15 @@
+pragma ComponentBehavior: Bound
+
 import QtQuick
 import QtQuick.Layouts
 import Quickshell
 import Caelestia.Config
 import qs.components
+import qs.components.controls
 import qs.services
 import qs.utils
 
-Item {
+ColumnLayout {
     id: root
 
     required property PopoutState popouts
@@ -14,148 +17,128 @@ Item {
 
     property bool isPinned: model ? model.isPinned : false
 
-    implicitWidth: layout.implicitWidth + Tokens.padding.normal * 2
-    implicitHeight: layout.implicitHeight + Tokens.padding.normal * 2
+    width: 200
+    implicitWidth: 200
+    spacing: Tokens.spacing.normal
 
     StyledRect {
-        anchors.fill: parent
+        Layout.fillWidth: true
+        implicitHeight: cardLayout.implicitHeight + Tokens.padding.normal * 2
         radius: Tokens.rounding.normal
         color: Colours.tPalette.m3surfaceContainer
         clip: true
+        visible: model && model.entry != null
 
         ColumnLayout {
-            id: layout
+            id: cardLayout
 
-            anchors.centerIn: parent
-            spacing: 0
+            anchors.left: parent.left
+            anchors.right: parent.right
+            anchors.top: parent.top
+            anchors.margins: Tokens.padding.normal
+            spacing: Tokens.spacing.small
 
             // Pin/Unpin action
-            StateLayer {
-                Layout.fillWidth: true
-                Layout.preferredHeight: Tokens.sizes.bar.trayMenuEntrySize
-                radius: Tokens.rounding.small
-                visible: model && model.entry != null
+            StyledRect {
+                id: pinItem
 
-                onClicked: {
-                    if (isPinned) {
-                        const current = GlobalConfig.launcher.favouriteApps ? [...GlobalConfig.launcher.favouriteApps] : [];
-                        const index = current.indexOf(model.id);
-                        if (index !== -1) {
-                            current.splice(index, 1);
-                            GlobalConfig.launcher.favouriteApps = current;
+                Layout.fillWidth: true
+                implicitHeight: pinLabel.implicitHeight
+
+                radius: Tokens.rounding.full
+                color: "transparent"
+
+                StateLayer {
+                    anchors.margins: -Tokens.padding.normal / 2
+                    anchors.leftMargin: -Tokens.padding.normal
+                    anchors.rightMargin: -Tokens.padding.normal
+
+                    radius: pinItem.radius
+
+                    onClicked: {
+                        if (isPinned) {
+                            const current = GlobalConfig.launcher.favouriteApps ? [...GlobalConfig.launcher.favouriteApps] : [];
+                            const index = current.indexOf(model.id);
+                            if (index !== -1) {
+                                current.splice(index, 1);
+                                GlobalConfig.launcher.favouriteApps = current;
+                            }
+                        } else {
+                            const current = GlobalConfig.launcher.favouriteApps ? [...GlobalConfig.launcher.favouriteApps] : [];
+                            if (!current.includes(model.id)) {
+                                current.push(model.id);
+                                GlobalConfig.launcher.favouriteApps = current;
+                            }
                         }
-                    } else {
-                        const current = GlobalConfig.launcher.favouriteApps ? [...GlobalConfig.launcher.favouriteApps] : [];
-                        if (!current.includes(model.id)) {
-                            current.push(model.id);
-                            GlobalConfig.launcher.favouriteApps = current;
-                        }
+                        root.popouts.hasCurrent = false;
                     }
-                    root.popouts.hasCurrent = false;
                 }
 
-                RowLayout {
-                    anchors.fill: parent
-                    anchors.margins: Tokens.padding.normal
-                    spacing: Tokens.spacing.normal
-
-                    MaterialIcon {
-                        text: isPinned ? "push_pin" : "push_pin"
-                        color: isPinned ? Colours.palette.m3onSurface : Colours.palette.m3onSurfaceVariant
-                        font.pointSize: Tokens.font.size.normal
-                    }
-
-                    StyledText {
-                        text: isPinned ? qsTr("Unpin from dock") : qsTr("Pin to dock")
-                        Layout.fillWidth: true
-                    }
+                StyledText {
+                    id: pinLabel
+                    anchors.left: parent.left
+                    text: isPinned ? qsTr("Unpin from dock") : qsTr("Pin to dock")
                 }
             }
 
             // New window action
-            StateLayer {
-                Layout.fillWidth: true
-                Layout.preferredHeight: Tokens.sizes.bar.trayMenuEntrySize
-                radius: Tokens.rounding.small
-                visible: model && model.entry != null
+            StyledRect {
+                id: newWinItem
 
-                onClicked: {
-                    if (model.entry) {
-                        if (model.entry.runInTerminal) {
-                            Quickshell.execDetached({
-                                command: ["app2unit", "--", ...GlobalConfig.general.apps.terminal, `${Quickshell.shellDir}/assets/wrap_term_launch.sh`, ...model.entry.command],
-                                workingDirectory: model.entry.workingDirectory
-                            });
-                        } else {
-                            Quickshell.execDetached({
-                                command: ["app2unit", "--", ...model.entry.command],
-                                workingDirectory: model.entry.workingDirectory
-                            });
+                Layout.fillWidth: true
+                implicitHeight: newWinLabel.implicitHeight
+
+                radius: Tokens.rounding.full
+                color: "transparent"
+
+                StateLayer {
+                    anchors.margins: -Tokens.padding.normal / 2
+                    anchors.leftMargin: -Tokens.padding.normal
+                    anchors.rightMargin: -Tokens.padding.normal
+
+                    radius: newWinItem.radius
+
+                    onClicked: {
+                        if (model.entry) {
+                            if (model.entry.runInTerminal) {
+                                Quickshell.execDetached({
+                                    command: ["app2unit", "--", ...GlobalConfig.general.apps.terminal, `${Quickshell.shellDir}/assets/wrap_term_launch.sh`, ...model.entry.command],
+                                    workingDirectory: model.entry.workingDirectory
+                                });
+                            } else {
+                                Quickshell.execDetached({
+                                    command: ["app2unit", "--", ...model.entry.command],
+                                    workingDirectory: model.entry.workingDirectory
+                                });
+                            }
                         }
+                        root.popouts.hasCurrent = false;
                     }
-                    root.popouts.hasCurrent = false;
                 }
 
-                RowLayout {
-                    anchors.fill: parent
-                    anchors.margins: Tokens.padding.normal
-                    spacing: Tokens.spacing.normal
-
-                    MaterialIcon {
-                        text: "add_to_photos"
-                        font.pointSize: Tokens.font.size.normal
-                        color: Colours.palette.m3onSurfaceVariant
-                    }
-
-                    StyledText {
-                        text: qsTr("Open new window")
-                        Layout.fillWidth: true
-                    }
+                StyledText {
+                    id: newWinLabel
+                    anchors.left: parent.left
+                    text: qsTr("Open new window")
                 }
             }
-            
-            // Divider
-            Rectangle {
-                Layout.fillWidth: true
-                Layout.preferredHeight: 1
-                color: Colours.palette.m3outlineVariant
-                visible: model && model.entry != null
-                Layout.topMargin: Tokens.padding.small
-                Layout.bottomMargin: Tokens.padding.small
+        }
+    }
+
+    IconTextButton {
+        Layout.fillWidth: true
+        inactiveColour: Colours.palette.m3primaryContainer
+        inactiveOnColour: Colours.palette.m3onPrimaryContainer
+        verticalPadding: Tokens.padding.small
+        text: qsTr("End task")
+        icon: "close"
+        visible: model && model.toplevels && model.toplevels.length > 0
+
+        onClicked: {
+            for (const toplevel of model.toplevels) {
+                Hypr.dispatch(`closewindow address:${toplevel.address}`);
             }
-
-            // Close all windows
-            StateLayer {
-                Layout.fillWidth: true
-                Layout.preferredHeight: Tokens.sizes.bar.trayMenuEntrySize
-                radius: Tokens.rounding.small
-                visible: model && model.toplevels && model.toplevels.length > 0
-
-                onClicked: {
-                    for (const toplevel of model.toplevels) {
-                        Hypr.dispatch(`closewindow address:${toplevel.address}`);
-                    }
-                    root.popouts.hasCurrent = false;
-                }
-
-                RowLayout {
-                    anchors.fill: parent
-                    anchors.margins: Tokens.padding.normal
-                    spacing: Tokens.spacing.normal
-
-                    MaterialIcon {
-                        text: "close"
-                        font.pointSize: Tokens.font.size.normal
-                        color: Colours.palette.m3error
-                    }
-
-                    StyledText {
-                        text: qsTr("Close all windows")
-                        Layout.fillWidth: true
-                        color: Colours.palette.m3error
-                    }
-                }
-            }
+            root.popouts.hasCurrent = false;
         }
     }
 }

@@ -125,6 +125,7 @@ Item {
                         }
                         
                         onEntered: {
+                            if (bar.popouts.hasCurrent && bar.popouts.currentName === "dockcontext") return;
                             bar.popouts.currentName = "dockhover";
                             bar.popouts.currentCenter = bar.isHorizontal ? delegateItem.mapToItem(null, delegateItem.width / 2, 0).x : (delegateItem.mapToItem(null, 0, delegateItem.height / 2).y ?? 0);
                             bar.popouts.dockModel = modelData;
@@ -144,7 +145,7 @@ Item {
                         anchors.bottom: parent.bottom
                         anchors.horizontalCenter: parent.horizontalCenter
                         anchors.bottomMargin: 0
-                        spacing: 4
+                        spacing: 2
                         visible: delegateItem.hasWindows
                         
                         Repeater {
@@ -155,12 +156,16 @@ Item {
                             
                             delegate: Rectangle {
                                 required property int index
-                                width: (index === 0 && delegateItem.isActive) ? 16 : 4
-                                height: 4
-                                radius: 2
+                                width: (index === 0 && delegateItem.isActive) ? 16 : 2
+    
+                                height: 2
+    
+                                radius: 1
+    
                                 color: delegateItem.isActive ? Colours.palette.m3primary : Colours.palette.m3onSurface
-                                
+    
                                 Behavior on width { NumberAnimation { duration: 250; easing.type: Easing.OutCubic } }
+                                Behavior on height { NumberAnimation { duration: 250; easing.type: Easing.OutCubic } }
                                 Behavior on color { ColorAnimation { duration: 250 } }
                             }
                         }
@@ -182,6 +187,7 @@ Item {
         
         const item = repeater.itemAt(index);
         if (item) {
+            if (bar.popouts.hasCurrent && bar.popouts.currentName === "dockcontext") return;
             bar.popouts.currentName = "dockhover";
             bar.popouts.currentCenter = isHorizontal ? item.mapToItem(null, item.implicitWidth / 2, 0).x : (item.mapToItem(null, 0, item.implicitHeight / 2).y ?? 0);
             bar.popouts.dockModel = modelDataArray[index];

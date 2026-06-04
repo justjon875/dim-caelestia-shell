@@ -190,7 +190,7 @@ Item {
                     MaterialIcon {
                         id: playIcon
                         anchors.centerIn: parent
-                        text: root.player && root.player.playbackStatus === MprisPlaybackStatus.Playing ? "pause" : "play_arrow"
+                        text: root.player && root.player.isPlaying ? "pause" : "play_arrow"
                         font.pointSize: Tokens.font.size.large
                     }
                 }
