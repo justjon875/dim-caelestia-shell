@@ -139,17 +139,25 @@ CustomMouseArea {
         // Show/hide bar on drag
         if (pressed && inBarArea(dragStart.x, dragStart.y)) {
             if (Config.bar.position === "left") {
-                if (dragX > Config.bar.dragThreshold) visibilities.bar = true;
-                else if (dragX < -Config.bar.dragThreshold) visibilities.bar = false;
+                if (dragX > Config.bar.dragThreshold)
+                    visibilities.bar = true;
+                else if (dragX < -Config.bar.dragThreshold)
+                    visibilities.bar = false;
             } else if (Config.bar.position === "right") {
-                if (dragX < -Config.bar.dragThreshold) visibilities.bar = true;
-                else if (dragX > Config.bar.dragThreshold) visibilities.bar = false;
+                if (dragX < -Config.bar.dragThreshold)
+                    visibilities.bar = true;
+                else if (dragX > Config.bar.dragThreshold)
+                    visibilities.bar = false;
             } else if (Config.bar.position === "top") {
-                if (dragY > Config.bar.dragThreshold) visibilities.bar = true;
-                else if (dragY < -Config.bar.dragThreshold) visibilities.bar = false;
+                if (dragY > Config.bar.dragThreshold)
+                    visibilities.bar = true;
+                else if (dragY < -Config.bar.dragThreshold)
+                    visibilities.bar = false;
             } else if (Config.bar.position === "bottom") {
-                if (dragY < -Config.bar.dragThreshold) visibilities.bar = true;
-                else if (dragY > Config.bar.dragThreshold) visibilities.bar = false;
+                if (dragY < -Config.bar.dragThreshold)
+                    visibilities.bar = true;
+                else if (dragY > Config.bar.dragThreshold)
+                    visibilities.bar = false;
             }
         }
 
@@ -167,15 +175,13 @@ CustomMouseArea {
                 root.panels.osd.hovered = true;
             }
 
-            const showSidebar = Config.bar.position === "right"
-                ? pressed && dragStart.x < Math.max(Config.border.minThickness, panels.leftMargin + panels.sidebar.x + panels.sidebar.width)
-                : pressed && dragStart.x > Math.min(screen.width - Config.border.minThickness, panels.leftMargin + panels.sidebar.x);
+            const showSidebar = Config.bar.position === "right" ? pressed && dragStart.x < Math.max(Config.border.minThickness, panels.leftMargin + panels.sidebar.x + panels.sidebar.width) : pressed && dragStart.x > Math.min(screen.width - Config.border.minThickness, panels.leftMargin + panels.sidebar.x);
 
             // Show/hide session on drag
             if (pressed && inRightPanel(panels.sessionWrapper, dragStart.x, dragStart.y) && withinPanelHeight(panels.sessionWrapper, x, y)) {
                 const showThreshold = Config.bar.position === "right" ? Config.session.dragThreshold : -Config.session.dragThreshold;
                 const hideThreshold = Config.bar.position === "right" ? -Config.session.dragThreshold : Config.session.dragThreshold;
-                
+
                 if (Config.bar.position === "right" ? dragX > showThreshold : dragX < showThreshold)
                     visibilities.session = true;
                 else if (Config.bar.position === "right" ? dragX < hideThreshold : dragX > hideThreshold)
@@ -190,9 +196,7 @@ CustomMouseArea {
                 visibilities.sidebar = true;
             }
         } else {
-            const outOfSidebar = Config.bar.position === "right"
-                ? x > panels.leftMargin + panels.sidebar.width * (1 - panels.sidebar.offsetScale)
-                : x < screen.width - panels.sidebar.width * (1 - panels.sidebar.offsetScale);
+            const outOfSidebar = Config.bar.position === "right" ? x > panels.leftMargin + panels.sidebar.width * (1 - panels.sidebar.offsetScale) : x < screen.width - panels.sidebar.width * (1 - panels.sidebar.offsetScale);
             // Show osd on hover
             const showOsd = outOfSidebar && inRightPanel(panels.osdWrapper, x, y);
 
@@ -210,7 +214,7 @@ CustomMouseArea {
             if (pressed && outOfSidebar && inRightPanel(panels.sessionWrapper, dragStart.x, dragStart.y) && withinPanelHeight(panels.sessionWrapper, x, y)) {
                 const showThreshold = Config.bar.position === "right" ? Config.session.dragThreshold : -Config.session.dragThreshold;
                 const hideThreshold = Config.bar.position === "right" ? -Config.session.dragThreshold : Config.session.dragThreshold;
-                
+
                 if (Config.bar.position === "right" ? dragX > showThreshold : dragX < showThreshold)
                     visibilities.session = true;
                 else if (Config.bar.position === "right" ? dragX < hideThreshold : dragX > hideThreshold)
@@ -255,6 +259,9 @@ CustomMouseArea {
         // Show popouts on hover
         if (inBarArea(x, y)) {
             bar.checkPopout(isBarHorizontal ? x : y);
+        } else if (popouts.currentName === "dockcontext") {
+            // Keep dock context menu open - only close when clicking actions inside it
+            // The menu will be closed by its own click handlers or clicking outside
         } else if ((!popouts.currentName.startsWith("traymenu") || ((popouts.current as StackView)?.depth ?? 0) <= 1) && !inLeftPanel(panels.popoutsWrapper, x, y)) {
             popouts.hasCurrent = false;
             bar.closeTray();

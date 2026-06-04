@@ -41,6 +41,9 @@ GridLayout {
     }
 
     function checkPopout(pos: real): void {
+        // Don't close dock context menu when mouse moves between items
+        if (popouts.hasCurrent && popouts.currentName === "dockcontext") return;
+        
         const ch = childAt(isHorizontal ? pos : width / 2, isHorizontal ? height / 2 : pos) as WrappedLoader;
 
         if (ch?.id !== "tray")
@@ -98,6 +101,10 @@ GridLayout {
                 popouts.hasCurrent = false;
             }
         } else if (id === "dock") {
+            // Don't close dock context menu - only handleHover for hover popouts
+            if (popouts.hasCurrent && popouts.currentName === "dockcontext") {
+                return;
+            }
             const item = ch.item as Item;
             if (item && typeof item.handleHover === "function") {
                 const relPos = pos - (isHorizontal ? ch.x : ch.y);
