@@ -136,7 +136,7 @@ ColumnLayout {
 
         onClicked: {
             for (const toplevel of model.toplevels) {
-                Hypr.dispatch(`closewindow address:${toplevel.address}`);
+                Hypr.dispatch(`closewindow address:0x${toplevel.address}`);
             }
             root.popouts.hasCurrent = false;
         }

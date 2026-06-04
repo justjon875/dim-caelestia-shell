@@ -260,7 +260,11 @@ CustomMouseArea {
         if (inBarArea(x, y)) {
             bar.checkPopout(isBarHorizontal ? x : y);
         } else if (popouts.currentName === "dockcontext" || popouts.currentName === "dockhover") {
-            // Keep dock popouts open - they are controlled by hover on the dock items themselves
+            // Close dock popouts if cursor is outside bar area (moving up/left/right but not into popout area)
+            if (!inLeftPanel(panels.popoutsWrapper, x, y)) {
+                popouts.hasCurrent = false;
+                bar.closeTray();
+            }
         } else if ((!popouts.currentName.startsWith("traymenu") || ((popouts.current as StackView)?.depth ?? 0) <= 1) && !inLeftPanel(panels.popoutsWrapper, x, y)) {
             popouts.hasCurrent = false;
             bar.closeTray();
