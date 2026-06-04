@@ -12,6 +12,8 @@ import qs.components.misc
 Singleton {
     id: root
 
+    property alias delayedRefreshTimer: delayedRefreshTimer
+
     readonly property var toplevels: Hyprland.toplevels
     readonly property var workspaces: Hyprland.workspaces
     readonly property var monitors: Hyprland.monitors
@@ -134,16 +136,28 @@ Singleton {
             } else if (["openwindow", "closewindow", "movewindow"].includes(n)) {
                 Hyprland.refreshToplevels();
                 Hyprland.refreshWorkspaces();
+                delayedRefreshTimer.restart();
             } else if (n.includes("mon")) {
                 Hyprland.refreshMonitors();
             } else if (n.includes("workspace")) {
                 Hyprland.refreshWorkspaces();
             } else if (n.includes("window") || n.includes("group") || ["pin", "fullscreen", "changefloatingmode", "minimize"].includes(n)) {
                 Hyprland.refreshToplevels();
+                delayedRefreshTimer.restart();
             }
         }
 
         target: Hyprland
+    }
+
+    Timer {
+        id: delayedRefreshTimer
+        interval: 50
+        repeat: false
+        onTriggered: {
+            Hyprland.refreshToplevels();
+            Hyprland.refreshWorkspaces();
+        }
     }
 
     Connections {

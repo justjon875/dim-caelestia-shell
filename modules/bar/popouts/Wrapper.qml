@@ -41,6 +41,7 @@ Item {
 
     property string detachedMode
     property string queuedMode
+    property alias dockModel: popoutState.dockModel
 
     // Dummy object so Tokens attached prop resolves to global config
     // Anim configs are not per-monitor

@@ -15,6 +15,7 @@ Item {
     id: root
 
     required property var bar
+    property int modelUpdateTrigger: 0
 
     readonly property int padding: Tokens.padding.normal
     readonly property int spacing: Tokens.spacing.small
@@ -32,6 +33,9 @@ Item {
 
         x: bar.width / 2 - width / 2 - (root.parent ? root.parent.x : 0)
         y: bar.height / 2 - height / 2 - (root.parent ? root.parent.y : 0)
+
+        property var _appsValues: DesktopEntries.applications.values
+        on_AppsValuesChanged: root.rebuildModel()
         
         Behavior on implicitWidth {
             enabled: bar.isHorizontal
@@ -64,15 +68,27 @@ Item {
                     required property var modelData
 
                     property bool isActive: {
-                        const activeTop = Hypr.activeToplevel;
+                        const activeTop = Hyprland.activeToplevel;
                         if (!activeTop) return false;
-                        for (const top of modelData.toplevels) {
-                            if (top.address === activeTop.address) return true;
+                        
+                        if (activeTop.lastIpcObject && delegateItem.modelData.appClass) {
+                            const activeClass = (activeTop.lastIpcObject.class || activeTop.lastIpcObject.initialClass || "").toLowerCase();
+                            const appId = delegateItem.modelData.appClass.toLowerCase();
+                            if (activeClass && (activeClass === appId || activeClass.includes(appId) || appId.includes(activeClass))) {
+                                return true;
+                            }
+                        }
+                        
+                        for (const top of delegateItem.modelData.toplevels) {
+                            if (top.address && top.address === activeTop.address) return true;
                         }
                         return false;
                     }
 
-                    property bool hasWindows: modelData.toplevels.length > 0
+                    property bool hasWindows: {
+                        const dummy = root.modelUpdateTrigger;
+                        return delegateItem.modelData.toplevels.length > 0;
+                    }
 
                     StateLayer {
                         anchors.fill: parent
@@ -101,17 +117,17 @@ Item {
                                     }
                                 }
                             } else if (mouse.button === Qt.RightButton) {
-                                bar.popouts.currentName = "taskbarcontext";
+                                bar.popouts.currentName = "dockcontext";
                                 bar.popouts.currentCenter = bar.isHorizontal ? delegateItem.mapToItem(null, delegateItem.width / 2, 0).x : (delegateItem.mapToItem(null, 0, delegateItem.height / 2).y ?? 0);
-                                bar.popouts.taskbarModel = modelData;
+                                bar.popouts.dockModel = modelData;
                                 bar.popouts.hasCurrent = true;
                             }
                         }
                         
                         onEntered: {
-                            bar.popouts.currentName = "taskbarhover";
+                            bar.popouts.currentName = "dockhover";
                             bar.popouts.currentCenter = bar.isHorizontal ? delegateItem.mapToItem(null, delegateItem.width / 2, 0).x : (delegateItem.mapToItem(null, 0, delegateItem.height / 2).y ?? 0);
-                            bar.popouts.taskbarModel = modelData;
+                            bar.popouts.dockModel = modelData;
                             bar.popouts.hasCurrent = true;
                         }
                     }
@@ -119,23 +135,35 @@ Item {
                     IconImage {
                         id: icon
                         anchors.centerIn: parent
-                        implicitSize: Math.round((delegateItem.width * 0.7) / 2) * 2
+                        implicitSize: Math.round(((delegateItem.width || 0) * 0.7) / 2) * 2 || 0
                         source: Icons.getAppIcon(modelData.iconName, "image-missing")
                         asynchronous: true
                     }
 
-                    Rectangle {
+                    Row {
                         anchors.bottom: parent.bottom
-                        anchors.horizontalCenter: icon.horizontalCenter
+                        anchors.horizontalCenter: parent.horizontalCenter
                         anchors.bottomMargin: 0
-                        width: Math.round((delegateItem.width * 0.3) / 2) * 2
-                        height: 2
-                        radius: 1
-                        color: delegateItem.isActive ? Colours.palette.m3primary : Colours.palette.m3onSurface
-                        opacity: delegateItem.hasWindows ? 1 : 0
+                        spacing: 4
                         visible: delegateItem.hasWindows
-
-                        Behavior on opacity { Anim {} }
+                        
+                        Repeater {
+                            model: {
+                                const dummy = root.modelUpdateTrigger;
+                                return Math.min(2, delegateItem.modelData.toplevels.length);
+                            }
+                            
+                            delegate: Rectangle {
+                                required property int index
+                                width: (index === 0 && delegateItem.isActive) ? 16 : 4
+                                height: 4
+                                radius: 2
+                                color: delegateItem.isActive ? Colours.palette.m3primary : Colours.palette.m3onSurface
+                                
+                                Behavior on width { NumberAnimation { duration: 250; easing.type: Easing.OutCubic } }
+                                Behavior on color { ColorAnimation { duration: 250 } }
+                            }
+                        }
                     }
                 }
             }
@@ -154,9 +182,9 @@ Item {
         
         const item = repeater.itemAt(index);
         if (item) {
-            bar.popouts.currentName = "taskbarhover";
+            bar.popouts.currentName = "dockhover";
             bar.popouts.currentCenter = isHorizontal ? item.mapToItem(null, item.implicitWidth / 2, 0).x : (item.mapToItem(null, 0, item.implicitHeight / 2).y ?? 0);
-            bar.popouts.taskbarModel = modelDataArray[index];
+            bar.popouts.dockModel = modelDataArray[index];
             bar.popouts.hasCurrent = true;
         } else {
             bar.popouts.hasCurrent = false;
@@ -167,6 +195,12 @@ Item {
 
     function rebuildModel(): void {
         const apps = [];
+        
+        console.log("rebuildModel triggered! Total windows in Hyprland.toplevels:", root._toplevels.length);
+        for (const t of root._toplevels) {
+            console.log(" - Window:", t.address, "ipc:", !!t.lastIpcObject, "class:", t.lastIpcObject ? t.lastIpcObject.class : "N/A", "initialClass:", t.lastIpcObject ? t.lastIpcObject.initialClass : "N/A");
+        }
+
         const pinnedIds = GlobalConfig.launcher.favouriteApps || [];
         
         for (const entry of DesktopEntries.applications.values) {
@@ -183,8 +217,10 @@ Item {
         }
         
         for (const toplevel of Hyprland.toplevels.values) {
-            if (!toplevel.lastIpcObject || !toplevel.lastIpcObject.class) continue;
-            const appClass = toplevel.lastIpcObject.class;
+            const ipc = toplevel.lastIpcObject;
+            if (!ipc) continue;
+            const appClass = ipc.class || ipc.initialClass;
+            if (!appClass) continue;
             
             let found = false;
             for (const app of apps) {
@@ -210,15 +246,54 @@ Item {
             }
         }
         
-        root.modelDataArray = apps;
-        repeater.model = apps;
+        let changed = apps.length !== root.modelDataArray.length;
+        if (!changed) {
+            for (let i = 0; i < apps.length; i++) {
+                if (apps[i].id !== root.modelDataArray[i].id || apps[i].toplevels.length !== root.modelDataArray[i].toplevels.length) {
+                    changed = true;
+                    break;
+                }
+                for (let j = 0; j < apps[i].toplevels.length; j++) {
+                    if (apps[i].toplevels[j].address !== root.modelDataArray[i].toplevels[j].address) {
+                        changed = true;
+                        break;
+                    }
+                }
+                if (changed) break;
+            }
+        }
+        
+        if (changed) {
+            root.modelDataArray = apps;
+            repeater.model = null;
+            repeater.model = apps;
+        }
+        
+        root.modelUpdateTrigger += 1;
     }
 
-    Connections {
-        target: Hyprland
-        function onToplevelsChanged(): void {
-            root.rebuildModel();
+    property var _toplevels: Hyprland.toplevels.values
+    on_ToplevelsChanged: {
+        root.rebuildModel()
+        delayedRebuildTimer.restart()
+    }
+    
+    Timer {
+        id: delayedRebuildTimer
+        interval: 100
+        repeat: false
+        onTriggered: root.rebuildModel()
+    }
+    
+    property var activeTop: Hyprland.activeToplevel
+    onActiveTopChanged: {
+        if (activeTop && activeTop.lastIpcObject) {
+            console.log("activeTop changed! class:", activeTop.lastIpcObject.class, "initialClass:", activeTop.lastIpcObject.initialClass);
+        } else {
+            console.log("activeTop changed! No IPC object or null activeTop");
         }
+        root.rebuildModel()
+        delayedRebuildTimer.restart()
     }
 
     Connections {

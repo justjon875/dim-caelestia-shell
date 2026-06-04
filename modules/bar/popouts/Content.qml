@@ -51,6 +51,20 @@ Item {
         }
 
         Popout {
+            name: "dockhover"
+            sourceComponent: DockHover {
+                popouts: root.popouts
+            }
+        }
+
+        Popout {
+            name: "dockcontext"
+            sourceComponent: DockContext {
+                popouts: root.popouts
+            }
+        }
+
+        Popout {
             id: networkPopout
 
             name: "network"

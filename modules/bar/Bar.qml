@@ -20,6 +20,8 @@ GridLayout {
     required property bool fullscreen
     readonly property int vPadding: Tokens.padding.large
 
+    Component.onCompleted: console.log("BAR INSTANTIATED!!! width:", width, "height:", height)
+
     readonly property bool isHorizontal: Config.bar.position === "top" || Config.bar.position === "bottom"
 
     columns: isHorizontal ? -1 : 1
@@ -92,6 +94,14 @@ GridLayout {
                 } else {
                     popouts.hasCurrent = false;
                 }
+            } else {
+                popouts.hasCurrent = false;
+            }
+        } else if (id === "dock") {
+            const item = ch.item as Item;
+            if (item && typeof item.handleHover === "function") {
+                const relPos = pos - (isHorizontal ? ch.x : ch.y);
+                item.handleHover(relPos, isHorizontal);
             } else {
                 popouts.hasCurrent = false;
             }
@@ -168,6 +178,16 @@ GridLayout {
                     sourceComponent: ActiveWindow {
                         bar: root
                         monitor: Brightness.getMonitorForScreen(root.screen)
+                    }
+                }
+            }
+            DelegateChoice {
+                roleValue: "dock"
+                delegate: WrappedLoader {
+                    Layout.fillWidth: true
+                    visible: !root.fullscreen
+                    sourceComponent: Dock {
+                        bar: root
                     }
                 }
             }
