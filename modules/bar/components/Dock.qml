@@ -318,11 +318,9 @@ Item {
                         height: 2
                         width: contentWidth
                         
-                        add: Transition {
-                            NumberAnimation { property: "scale"; from: 0; to: 1; duration: 250; easing.type: Easing.OutBack }
-                        }
                         remove: Transition {
                             NumberAnimation { property: "scale"; from: 1; to: 0; duration: 250; easing.type: Easing.InBack }
+                            NumberAnimation { property: "y"; from: 0; to: -15; duration: 250; easing.type: Easing.InBack }
                         }
                         addDisplaced: Transition {
                             NumberAnimation { properties: "x,y"; duration: 250; easing.type: Easing.OutCubic }
@@ -346,9 +344,18 @@ Item {
     
                                 color: delegateItem.isActive ? Colours.palette.m3primary : Colours.palette.m3onSurface
     
+                                scale: 0
+                                y: -15
+                                Component.onCompleted: {
+                                    scale = 1;
+                                    y = 0;
+                                }
+
                                 Behavior on width { NumberAnimation { duration: 250; easing.type: Easing.OutCubic } }
                                 Behavior on height { NumberAnimation { duration: 250; easing.type: Easing.OutCubic } }
                                 Behavior on color { ColorAnimation { duration: 250 } }
+                                Behavior on scale { NumberAnimation { duration: 250; easing.type: Easing.OutBack } }
+                                Behavior on y { NumberAnimation { duration: 250; easing.type: Easing.OutBack } }
                             }
                         }
                 }
