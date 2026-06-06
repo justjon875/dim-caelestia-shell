@@ -1,6 +1,7 @@
 pragma Singleton
 
 import QtQuick
+import QtMultimedia
 import Quickshell
 import Quickshell.Io
 import Quickshell.Services.Pipewire
@@ -180,4 +181,28 @@ Singleton {
 
         target: "audio"
     }
+
+    SoundEffect { id: sfxCameraClick; source: Qt.resolvedUrl("../assets/sounds/camera_click.wav") }
+    SoundEffect { id: sfxChargingStarted; source: Qt.resolvedUrl("../assets/sounds/ChargingStarted.wav") }
+    SoundEffect { id: sfxEffectTick; source: Qt.resolvedUrl("../assets/sounds/Effect_Tick.wav") }
+    SoundEffect { id: sfxLock; source: Qt.resolvedUrl("../assets/sounds/Lock.wav") }
+    SoundEffect { id: sfxUnlock; source: Qt.resolvedUrl("../assets/sounds/Unlock.wav") }
+    SoundEffect { id: sfxLowBattery; source: Qt.resolvedUrl("../assets/sounds/LowBattery.wav") }
+    SoundEffect { id: sfxVideoRecord; source: Qt.resolvedUrl("../assets/sounds/VideoRecord.wav") }
+    SoundEffect { id: sfxVideoStop; source: Qt.resolvedUrl("../assets/sounds/VideoStop.wav") }
+
+    function playSound(sfx: SoundEffect, setting: bool): void {
+        if (!GlobalConfig.audio.sounds.enabled || !setting)
+            return;
+        sfx.play();
+    }
+
+    function playCameraClick(): void { playSound(sfxCameraClick, GlobalConfig.audio.sounds.cameraClick); }
+    function playChargingStarted(): void { playSound(sfxChargingStarted, GlobalConfig.audio.sounds.chargingStarted); }
+    function playEffectTick(): void { playSound(sfxEffectTick, GlobalConfig.audio.sounds.effectTick); }
+    function playLock(): void { playSound(sfxLock, GlobalConfig.audio.sounds.lock); }
+    function playUnlock(): void { playSound(sfxUnlock, GlobalConfig.audio.sounds.unlock); }
+    function playLowBattery(): void { playSound(sfxLowBattery, GlobalConfig.audio.sounds.lowBattery); }
+    function playVideoRecord(): void { playSound(sfxVideoRecord, GlobalConfig.audio.sounds.screenRecord); }
+    function playVideoStop(): void { playSound(sfxVideoStop, GlobalConfig.audio.sounds.screenRecord); }
 }

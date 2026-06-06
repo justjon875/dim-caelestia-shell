@@ -4,7 +4,9 @@ import QtQuick
 import Quickshell
 import Quickshell.Io
 import Quickshell.Wayland
+import Caelestia.Services
 import qs.components.misc
+import qs.services
 
 Scope {
     property alias lock: lock
@@ -13,6 +15,11 @@ Scope {
         id: lock
 
         signal unlock
+
+        onLockedChanged: {
+            if (!locked)
+                Audio.playUnlock();
+        }
 
         LockSurface {
             lock: lock
@@ -45,7 +52,10 @@ Scope {
         // qmllint enable unresolved-type
         name: "lock"
         description: "Lock the current session"
-        onPressed: lock.locked = true
+        onPressed: {
+            Audio.playLock();
+            lock.locked = true;
+        }
     }
 
     // qmllint disable unresolved-type
@@ -58,6 +68,7 @@ Scope {
 
     IpcHandler {
         function lock(): void {
+            Audio.playLock();
             lock.locked = true;
         }
 

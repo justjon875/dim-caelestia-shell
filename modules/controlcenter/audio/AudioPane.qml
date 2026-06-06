@@ -622,6 +622,100 @@ Item {
                             }
                         }
                     }
+
+                    SectionHeader {
+                        title: qsTr("Sound Effects")
+                        description: qsTr("System-wide sound effects")
+                    }
+
+                    SectionContainer {
+                        contentSpacing: Tokens.spacing.normal
+
+                        ColumnLayout {
+                            Layout.fillWidth: true
+                            spacing: Tokens.spacing.small
+
+                            SwitchRow {
+                                label: qsTr("Enable sound effects")
+                                checked: GlobalConfig.audio.sounds.enabled
+                                onToggled: checked => {
+                                    GlobalConfig.audio.sounds.enabled = checked;
+                                    GlobalConfig.save();
+                                }
+                            }
+
+                            SwitchRow {
+                                label: qsTr("Camera click")
+                                checked: GlobalConfig.audio.sounds.cameraClick
+                                enabled: GlobalConfig.audio.sounds.enabled
+                                onToggled: checked => {
+                                    GlobalConfig.audio.sounds.cameraClick = checked;
+                                    GlobalConfig.save();
+                                }
+                            }
+
+                            SwitchRow {
+                                label: qsTr("Charging started")
+                                checked: GlobalConfig.audio.sounds.chargingStarted
+                                enabled: GlobalConfig.audio.sounds.enabled
+                                onToggled: checked => {
+                                    GlobalConfig.audio.sounds.chargingStarted = checked;
+                                    GlobalConfig.save();
+                                }
+                            }
+
+                            SwitchRow {
+                                label: qsTr("Effect tick")
+                                checked: GlobalConfig.audio.sounds.effectTick
+                                enabled: GlobalConfig.audio.sounds.enabled
+                                onToggled: checked => {
+                                    GlobalConfig.audio.sounds.effectTick = checked;
+                                    GlobalConfig.save();
+                                }
+                            }
+
+                            SwitchRow {
+                                label: qsTr("Lock")
+                                checked: GlobalConfig.audio.sounds.lock
+                                enabled: GlobalConfig.audio.sounds.enabled
+                                onToggled: checked => {
+                                    GlobalConfig.audio.sounds.lock = checked;
+                                    GlobalConfig.save();
+                                    if (checked) Audio.playLock();
+                                }
+                            }
+
+                            SwitchRow {
+                                label: qsTr("Unlock screen")
+                                checked: GlobalConfig.audio.sounds.unlock
+                                enabled: GlobalConfig.audio.sounds.enabled
+                                onToggled: checked => {
+                                    GlobalConfig.audio.sounds.unlock = checked;
+                                    GlobalConfig.save();
+                                }
+                            }
+
+                            SwitchRow {
+                                label: qsTr("Low battery")
+                                checked: GlobalConfig.audio.sounds.lowBattery
+                                enabled: GlobalConfig.audio.sounds.enabled
+                                onToggled: checked => {
+                                    GlobalConfig.audio.sounds.lowBattery = checked;
+                                    GlobalConfig.save();
+                                }
+                            }
+
+                            SwitchRow {
+                                label: qsTr("Screen recording")
+                                checked: GlobalConfig.audio.sounds.screenRecord
+                                enabled: GlobalConfig.audio.sounds.enabled
+                                onToggled: checked => {
+                                    GlobalConfig.audio.sounds.screenRecord = checked;
+                                    GlobalConfig.save();
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }

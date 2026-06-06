@@ -10,6 +10,7 @@ qml_module(caelestia-config
         tokensattached.cpp
         anim.cpp
         monitorconfigmanager.cpp
+        audioconfig.hpp
         backgroundconfig.hpp
         barconfig.hpp
         borderconfig.hpp

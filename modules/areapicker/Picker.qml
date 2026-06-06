@@ -6,6 +6,7 @@ import Quickshell
 import Quickshell.Io
 import Quickshell.Wayland
 import Caelestia
+import Caelestia.Services
 import qs.components
 import qs.services
 
@@ -80,6 +81,7 @@ MouseArea {
             } else {
                 Quickshell.execDetached(["swappy", "-f", path]);
             }
+            Audio.playCameraClick();
             closeAnim.start();
         });
     }
