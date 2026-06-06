@@ -134,6 +134,7 @@ StyledWindow {
         opacity: GlobalConfig.appearance.pitchBlack ? 1 : (Colours.transparency.enabled ? Colours.transparency.base : 1)
 
         readonly property bool sidebarShouldFlatCorner: panels.popouts.hasCurrent && (panels.popouts.currentName !== "dockhover" && panels.popouts.currentName !== "dockcontext" && panels.popouts.currentName !== "activewindow")
+        readonly property bool sidebarCornerTransition: !sidebarShouldFlatCorner && panels.sidebar.offsetScale > 0
         layer.enabled: true
         layer.effect: MultiEffect {
             shadowEnabled: true
@@ -193,11 +194,10 @@ StyledWindow {
             panel: panels.sidebar
             deformAmount: 0.03
             implicitHeight: panel.height * (1 / rawDeformMatrix.m22) + 2
-            readonly property real offsetScale: panels.sidebar.offsetScale
-            readonly property bool sidebarShouldFlat: layoutContainer.sidebarShouldFlatCorner || (offsetScale <= 0.08 && (Config.bar.position === "bottom" || Config.bar.position === "top"))
+            readonly property real sidebarOffset: panels.sidebar.offsetScale
             exclude: {
                 const list = [];
-                if (offsetScale <= 0.08) {
+                if (sidebarOffset <= 0.08) {
                     list.push(utilsBg);
                     if (layoutContainer.sidebarShouldFlatCorner && (Config.bar.position === "bottom" || Config.bar.position === "top")) {
                         list.push(popoutBg);
@@ -207,7 +207,8 @@ StyledWindow {
             }
             topLeftRadius: {
                 if (Config.bar.position === "bottom") {
-                    return (sidebarShouldFlat || offsetScale > 0.3) ? radius : Math.max(0, Math.min(1, offsetScale / 0.3)) * radius;
+                    // Only animate during opening transition; stay rounded when open
+                    return layoutContainer.sidebarCornerTransition ? Math.max(0, Math.min(1, sidebarOffset / 0.3)) * radius : radius;
                 } else if (Config.bar.position === "top") {
                     return (layoutContainer.sidebarShouldFlatCorner ? 0 : radius);
                 } else {
@@ -216,7 +217,7 @@ StyledWindow {
             }
             topRightRadius: {
                 if (Config.bar.position === "bottom") {
-                    return (sidebarShouldFlat || offsetScale > 0.3) ? radius : Math.max(0, Math.min(1, offsetScale / 0.3)) * radius;
+                    return layoutContainer.sidebarCornerTransition ? Math.max(0, Math.min(1, sidebarOffset / 0.3)) * radius : radius;
                 } else if (Config.bar.position === "top") {
                     return (layoutContainer.sidebarShouldFlatCorner ? 0 : radius);
                 } else {
@@ -225,10 +226,10 @@ StyledWindow {
             }
             bottomLeftRadius: Config.bar.position === "bottom"
                 ? (layoutContainer.sidebarShouldFlatCorner ? 0 : radius)
-                : (sidebarShouldFlat || offsetScale > 0.3) ? radius : Math.max(0, Math.min(1, offsetScale / 0.3)) * radius
+                : (Config.bar.position === "right" ? radius : Math.max(0, Math.min(1, sidebarOffset / 0.3)) * radius)
             bottomRightRadius: Config.bar.position === "bottom"
                 ? (layoutContainer.sidebarShouldFlatCorner ? 0 : radius)
-                : (sidebarShouldFlat || offsetScale > 0.3) ? radius : Math.max(0, Math.min(1, offsetScale / 0.3)) * radius
+                : (Config.bar.position === "right" ? Math.max(0, Math.min(1, sidebarOffset / 0.3)) * radius : radius)
         }
 
         PanelBg {
