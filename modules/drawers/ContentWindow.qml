@@ -132,6 +132,8 @@ StyledWindow {
         Config.screen: root.screen.name
         anchors.fill: parent
         opacity: GlobalConfig.appearance.pitchBlack ? 1 : (Colours.transparency.enabled ? Colours.transparency.base : 1)
+
+        readonly property bool sidebarShouldFlatCorner: panels.popouts.hasCurrent && (panels.popouts.currentName !== "dockhover" && panels.popouts.currentName !== "dockcontext" && panels.popouts.currentName !== "activewindow")
         layer.enabled: true
         layer.effect: MultiEffect {
             shadowEnabled: true
@@ -195,7 +197,7 @@ StyledWindow {
                 const list = [];
                 if (panels.sidebar.offsetScale <= 0.08) {
                     list.push(utilsBg);
-                    if (panels.popouts.hasCurrent && (Config.bar.position === "bottom" || Config.bar.position === "top")) {
+                    if (layoutContainer.sidebarShouldFlatCorner && (Config.bar.position === "bottom" || Config.bar.position === "top")) {
                         list.push(popoutBg);
                     }
                 }
@@ -205,7 +207,7 @@ StyledWindow {
                 if (Config.bar.position === "bottom") {
                     return Math.max(0, Math.min(1, panels.sidebar.offsetScale / 0.3)) * radius;
                 } else if (Config.bar.position === "top") {
-                    return (panels.popouts.hasCurrent ? 0 : radius);
+                    return (layoutContainer.sidebarShouldFlatCorner ? 0 : radius);
                 } else {
                     return radius;
                 }
@@ -214,16 +216,16 @@ StyledWindow {
                 if (Config.bar.position === "bottom") {
                     return Math.max(0, Math.min(1, panels.sidebar.offsetScale / 0.3)) * radius;
                 } else if (Config.bar.position === "top") {
-                    return (panels.popouts.hasCurrent ? 0 : radius);
+                    return (layoutContainer.sidebarShouldFlatCorner ? 0 : radius);
                 } else {
                     return radius;
                 }
             }
             bottomLeftRadius: Config.bar.position === "bottom"
-                ? (panels.popouts.hasCurrent ? 0 : radius)
+                ? (layoutContainer.sidebarShouldFlatCorner ? 0 : radius)
                 : (Config.bar.position === "right" ? radius : Math.max(0, Math.min(1, panels.sidebar.offsetScale / 0.3)) * radius)
             bottomRightRadius: Config.bar.position === "bottom"
-                ? (panels.popouts.hasCurrent ? 0 : radius)
+                ? (layoutContainer.sidebarShouldFlatCorner ? 0 : radius)
                 : (Config.bar.position === "right" ? Math.max(0, Math.min(1, panels.sidebar.offsetScale / 0.3)) * radius : radius)
         }
 
