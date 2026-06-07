@@ -19,26 +19,26 @@ RowLayout {
         return Players.list.find(p => p.identity.toLowerCase().includes(model.appClass.toLowerCase()) || (model.id && p.identity.toLowerCase().includes(model.id.toLowerCase().replace(".desktop", "")))) || null;
     }
 
-    spacing: Tokens.spacing.normal
+    spacing: Tokens.spacing.medium
 
         // Fallback for pinned apps with no active windows
         StyledRect {
             visible: !root.model || !root.model.toplevels || root.model.toplevels.length === 0
             Layout.alignment: Qt.AlignTop
-            radius: Tokens.rounding.normal
+            radius: Tokens.rounding.medium
             color: Colours.tPalette.m3surfaceContainer
             clip: true
-            implicitWidth: fallbackLayout.implicitWidth + Tokens.padding.normal * 2
-            implicitHeight: fallbackLayout.implicitHeight + Tokens.padding.normal * 2
+            implicitWidth: fallbackLayout.implicitWidth + Tokens.padding.medium * 2
+            implicitHeight: fallbackLayout.implicitHeight + Tokens.padding.medium * 2
 
             ColumnLayout {
                 id: fallbackLayout
                 anchors.centerIn: parent
-                spacing: Tokens.spacing.normal
+                spacing: Tokens.spacing.medium
 
                 RowLayout {
                     Layout.fillWidth: true
-                    spacing: Tokens.spacing.normal
+                    spacing: Tokens.spacing.medium
 
                     IconImage {
                         id: fallbackIcon
@@ -56,7 +56,7 @@ RowLayout {
                         StyledText {
                             Layout.fillWidth: true
                             text: model ? (model.entry ? model.entry.name : model.appClass) : ""
-                            font.pointSize: Tokens.font.size.normal
+                            font.pointSize: Tokens.font.body.medium.pointSize
                             elide: Text.ElideRight
                         }
                     }
@@ -75,16 +75,16 @@ RowLayout {
                 readonly property real targetHeight: Math.max(50, Math.min(targetWidth * windowRatio, Tokens.sizes.bar.windowPreviewSize * 1.5))
 
                 Layout.alignment: Qt.AlignTop
-                radius: Tokens.rounding.normal
+                radius: Tokens.rounding.medium
                 color: Colours.tPalette.m3surfaceContainer
                 clip: true
-                implicitWidth: cardLayout.implicitWidth + Tokens.padding.normal * 2
-                implicitHeight: cardLayout.implicitHeight + Tokens.padding.normal * 2
+                implicitWidth: cardLayout.implicitWidth + Tokens.padding.medium * 2
+                implicitHeight: cardLayout.implicitHeight + Tokens.padding.medium * 2
 
                 ColumnLayout {
                     id: cardLayout
                     anchors.centerIn: parent
-                    spacing: Tokens.spacing.normal
+                    spacing: Tokens.spacing.medium
 
                     // Title row
                     RowLayout {
@@ -102,7 +102,7 @@ RowLayout {
                             id: titleText
                             Layout.fillWidth: true
                             text: modelData.title || ""
-                            font.pointSize: Tokens.font.size.smaller
+                            font.pointSize: Tokens.font.body.small.pointSize
                             color: Colours.palette.m3onSurfaceVariant
                             elide: Text.ElideRight
                         }
@@ -127,7 +127,7 @@ RowLayout {
                                 id: winfoIcon
                                 anchors.centerIn: parent
                                 text: "chevron_right"
-                                font.pointSize: Tokens.font.size.normal
+                                fontStyle.pointSize: Tokens.font.body.medium.pointSize
                             }
                         }
 
@@ -150,7 +150,7 @@ RowLayout {
                                 id: closeIcon
                                 anchors.centerIn: parent
                                 text: "close"
-                                font.pointSize: Tokens.font.size.normal
+                                fontStyle.pointSize: Tokens.font.body.medium.pointSize
                             }
                         }
                     }
@@ -187,7 +187,7 @@ RowLayout {
                     // Media controls
                     RowLayout {
                         Layout.alignment: Qt.AlignHCenter
-                        spacing: Tokens.spacing.normal
+                        spacing: Tokens.spacing.medium
                         visible: !!root.player
 
                         Item {
@@ -205,7 +205,7 @@ RowLayout {
                                 id: prevIcon
                                 anchors.centerIn: parent
                                 text: "skip_previous"
-                                font.pointSize: Tokens.font.size.large
+                                fontStyle.pointSize: Tokens.font.body.large.pointSize
                             }
                         }
 
@@ -224,7 +224,7 @@ RowLayout {
                                 id: playIcon
                                 anchors.centerIn: parent
                                 text: (root.player && root.player.isPlaying) ? "pause" : "play_arrow"
-                                font.pointSize: Tokens.font.size.large
+                                fontStyle.pointSize: Tokens.font.body.large.pointSize
                             }
                         }
 
@@ -243,7 +243,7 @@ RowLayout {
                                 id: nextIcon
                                 anchors.centerIn: parent
                                 text: "skip_next"
-                                font.pointSize: Tokens.font.size.large
+                                fontStyle.pointSize: Tokens.font.body.large.pointSize
                             }
                         }
                     }
