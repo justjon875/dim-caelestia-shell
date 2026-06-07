@@ -20,7 +20,7 @@ GridLayout {
     readonly property bool isHorizontal: Config.bar.position === "top" || Config.bar.position === "bottom"
 
     // Unanimated prop for others to use as reference
-    readonly property int size: isHorizontal ? (implicitWidth + (hasWindows ? Tokens.padding.small : 0)) : (implicitHeight + (hasWindows ? Tokens.padding.small : 0))
+    readonly property int size: isHorizontal ? (implicitWidth + (hasWindows ? Tokens.padding.extraSmall : 0)) : (implicitHeight + (hasWindows ? Tokens.padding.extraSmall : 0))
 
     readonly property int ws: groupOffset + index + 1
     readonly property bool isOccupied: occupied[ws] ?? false
@@ -41,8 +41,8 @@ GridLayout {
         id: indicator
 
         Layout.alignment: isHorizontal ? (Qt.AlignVCenter | Qt.AlignLeft) : (Qt.AlignHCenter | Qt.AlignTop)
-        Layout.preferredWidth: isHorizontal ? (Tokens.sizes.bar.innerWidth - Tokens.padding.small * 2) : -1
-        Layout.preferredHeight: isHorizontal ? -1 : (Tokens.sizes.bar.innerWidth - Tokens.padding.small * 2)
+        Layout.preferredWidth: isHorizontal ? (Tokens.sizes.bar.innerWidth - Tokens.padding.small) : -1
+        Layout.preferredHeight: isHorizontal ? -1 : (Tokens.sizes.bar.innerWidth - Tokens.padding.small)
         Layout.leftMargin: isHorizontal ? Math.floor(Tokens.spacing.small / 2) + 1 : 0
 
         animate: true
@@ -62,6 +62,7 @@ GridLayout {
         }
         color: Config.bar.workspaces.occupiedBg || root.isOccupied || root.activeWsId === root.ws ? Colours.palette.m3onSurface : Colours.layer(Colours.palette.m3outlineVariant, 2)
         verticalAlignment: Qt.AlignVCenter
+        font.family: "Rubik" // Hard code rubik for now since google sans doesn't play well with certain unicode symbols apparently
     }
 
     Loader {

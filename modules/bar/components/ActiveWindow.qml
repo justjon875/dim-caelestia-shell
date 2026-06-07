@@ -90,8 +90,7 @@ Item {
         id: metrics
 
         text: root.windowTitle
-        font.pointSize: root.Tokens.font.size.smaller
-        font.family: root.Tokens.font.family.mono
+        font: root.Tokens.font.body.builders.small.letterSpacing(1.4).build()
         elide: Qt.ElideRight
         elideWidth: root.maxSize - icon.width
 
@@ -132,6 +131,7 @@ Item {
         anchors.left: bar.isHorizontal ? icon.right : undefined
         anchors.leftMargin: bar.isHorizontal ? Tokens.spacing.small : 0
 
+        // Custom Title component does not have font/color directly, StyledText child does
         opacity: root.current === this ? 1 : 0
 
         StyledText {
@@ -146,7 +146,9 @@ Item {
         }
 
         Behavior on opacity {
-            Anim {}
+            Anim {
+                type: Anim.DefaultEffects
+            }
         }
     }
 }

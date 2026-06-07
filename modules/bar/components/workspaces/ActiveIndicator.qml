@@ -50,8 +50,8 @@ StyledRect {
 
     x: isHorizontal ? offset + mask.x : 0
     y: isHorizontal ? 0 : offset + mask.y
-    implicitWidth: isHorizontal ? size : Tokens.sizes.bar.innerWidth - Tokens.padding.small * 2
-    implicitHeight: isHorizontal ? Tokens.sizes.bar.innerWidth - Tokens.padding.small * 2 : size
+    implicitWidth: isHorizontal ? size : Tokens.sizes.bar.innerWidth - Tokens.padding.small
+    implicitHeight: isHorizontal ? Tokens.sizes.bar.innerWidth - Tokens.padding.small : size
     radius: Tokens.rounding.full
     color: Colours.palette.m3primary
 

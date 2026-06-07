@@ -102,7 +102,7 @@ void CUtils::saveItem(QQuickItem* target, const QUrl& path, const QRect& rect, Q
         });
 }
 
-bool CUtils::copyFile(const QUrl& source, const QUrl& target, bool overwrite) const {
+bool CUtils::copyFile(const QUrl& source, const QUrl& target, bool overwrite) {
     if (!source.isLocalFile()) {
         qCWarning(lcCUtils) << "copyFile: source" << source << "is not a local file";
         return false;
@@ -122,7 +122,7 @@ bool CUtils::copyFile(const QUrl& source, const QUrl& target, bool overwrite) co
     return QFile::copy(source.toLocalFile(), target.toLocalFile());
 }
 
-bool CUtils::deleteFile(const QUrl& path) const {
+bool CUtils::deleteFile(const QUrl& path) {
     if (!path.isLocalFile()) {
         qCWarning(lcCUtils) << "deleteFile: path" << path << "is not a local file";
         return false;
@@ -131,7 +131,7 @@ bool CUtils::deleteFile(const QUrl& path) const {
     return QFile::remove(path.toLocalFile());
 }
 
-QString CUtils::toLocalFile(const QUrl& url) const {
+QString CUtils::toLocalFile(const QUrl& url) {
     if (!url.isLocalFile()) {
         qCWarning(lcCUtils) << "toLocalFile: given url is not a local file" << url;
         return QString();
@@ -140,7 +140,7 @@ QString CUtils::toLocalFile(const QUrl& url) const {
     return url.toLocalFile();
 }
 
-QString CUtils::sha256(const QString& path) const {
+QString CUtils::sha256(const QString& path) {
     QFile file(path);
     if (!file.open(QIODevice::ReadOnly)) {
         qCWarning(lcCUtils) << "sha256: failed to open" << path;
@@ -152,6 +152,22 @@ QString CUtils::sha256(const QString& path) const {
     file.close();
 
     return hash.result().toHex();
+}
+
+qreal CUtils::clamp(qreal value, qreal min, qreal max) {
+    return qBound(min, value, max);
+}
+
+#ifndef CAELESTIA_VERSION
+#define CAELESTIA_VERSION ""
+#endif
+
+QString CUtils::version() const {
+    return QStringLiteral(CAELESTIA_VERSION);
+}
+
+QString CUtils::qtVersion() const {
+    return QStringLiteral(QT_VERSION_STR);
 }
 
 } // namespace caelestia

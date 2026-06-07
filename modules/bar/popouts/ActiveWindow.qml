@@ -12,22 +12,30 @@ Item {
 
     required property PopoutState popouts
 
+<<<<<<< HEAD
     implicitWidth: Tokens.sizes.bar.windowPreviewSize
+=======
+    implicitWidth: Hypr.activeToplevel ? child.implicitWidth : -Tokens.padding.extraLargeIncreased
+>>>>>>> upstream/main
     implicitHeight: child.implicitHeight
 
     Column {
         id: child
 
         anchors.centerIn: parent
+<<<<<<< HEAD
         width: parent.width
         spacing: Tokens.spacing.normal
+=======
+        spacing: Tokens.spacing.medium
+>>>>>>> upstream/main
 
         RowLayout {
             id: detailsRow
 
             anchors.left: parent.left
             anchors.right: parent.right
-            spacing: Tokens.spacing.normal
+            spacing: Tokens.spacing.medium
 
             IconImage {
                 id: icon
@@ -48,7 +56,7 @@ Item {
                 StyledText {
                     Layout.fillWidth: true
                     text: Hypr.activeToplevel?.title ?? ""
-                    font.pointSize: Tokens.font.size.normal
+                    font: Tokens.font.body.medium
                     elide: Text.ElideRight
                 }
 
@@ -61,13 +69,13 @@ Item {
             }
 
             Item {
-                implicitWidth: expandIcon.implicitHeight + Tokens.padding.small * 2
-                implicitHeight: expandIcon.implicitHeight + Tokens.padding.small * 2
+                implicitWidth: expandIcon.implicitHeight + Tokens.padding.small
+                implicitHeight: expandIcon.implicitHeight + Tokens.padding.small
 
                 Layout.alignment: Qt.AlignVCenter
 
                 StateLayer {
-                    radius: Tokens.rounding.normal
+                    radius: Tokens.rounding.large
                     onClicked: root.popouts.detachRequested("winfo")
                 }
 
@@ -79,14 +87,14 @@ Item {
 
                     text: "chevron_right"
 
-                    font.pointSize: Tokens.font.size.large
+                    fontStyle: Tokens.font.icon.large
                 }
             }
         }
 
         ClippingWrapperRectangle {
             color: "transparent"
-            radius: Tokens.rounding.small
+            radius: Tokens.rounding.medium
 
             ScreencopyView {
                 id: preview

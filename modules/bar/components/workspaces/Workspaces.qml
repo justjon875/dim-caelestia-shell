@@ -29,8 +29,8 @@ StyledClippingRect {
 
     readonly property bool isHorizontal: Config.bar.position === "top" || Config.bar.position === "bottom"
 
-    implicitWidth: isHorizontal ? (layout.implicitWidth + Tokens.padding.small * 2) : Tokens.sizes.bar.innerWidth
-    implicitHeight: isHorizontal ? Tokens.sizes.bar.innerWidth : (layout.implicitHeight + Tokens.padding.small * 2)
+    implicitWidth: isHorizontal ? (layout.implicitWidth + Tokens.padding.small) : Tokens.sizes.bar.innerWidth
+    implicitHeight: isHorizontal ? Tokens.sizes.bar.innerWidth : (layout.implicitHeight + Tokens.padding.small)
 
     color: Colours.tPalette.m3surfaceContainer
     radius: Tokens.rounding.full
@@ -53,7 +53,7 @@ StyledClippingRect {
             active: Config.bar.workspaces.occupiedBg
 
             anchors.fill: parent
-            anchors.margins: Tokens.padding.small
+            anchors.margins: Tokens.padding.extraSmall
 
             sourceComponent: OccupiedBg {
                 workspaces: workspaces
@@ -69,8 +69,8 @@ StyledClippingRect {
             columns: isHorizontal ? -1 : 1
             rows: isHorizontal ? 1 : -1
             flow: isHorizontal ? GridLayout.LeftToRight : GridLayout.TopToBottom
-            columnSpacing: Math.floor(Tokens.spacing.small / 2)
-            rowSpacing: Math.floor(Tokens.spacing.small / 2)
+            columnSpacing: Math.floor(Tokens.spacing.extraSmall)
+            rowSpacing: Math.floor(Tokens.spacing.extraSmall)
 
             Repeater {
                 id: workspaces
@@ -115,7 +115,9 @@ StyledClippingRect {
         }
 
         Behavior on opacity {
-            Anim {}
+            Anim {
+                type: Anim.DefaultEffects
+            }
         }
     }
 
@@ -125,7 +127,7 @@ StyledClippingRect {
         asynchronous: true
 
         anchors.fill: parent
-        anchors.margins: Tokens.padding.small
+        anchors.margins: Tokens.padding.extraSmall
 
         active: opacity > 0
 
@@ -141,7 +143,9 @@ StyledClippingRect {
         }
 
         Behavior on opacity {
-            Anim {}
+            Anim {
+                type: Anim.DefaultEffects
+            }
         }
     }
 

@@ -22,7 +22,7 @@ Item {
     // (Removed root-level 'size' property that was causing the 'label is not defined' error)
 
     layer.enabled: true
-    layer.effect: OpacityMask {
+    layer.effect: Mask {
         maskSource: mask
     }
 
@@ -60,7 +60,9 @@ Item {
             opacity: isHorizontal ? (view.contentX > 0 ? 0 : 1) : (view.contentY > 0 ? 0 : 1)
 
             Behavior on opacity {
-                Anim {}
+                Anim {
+                    type: Anim.DefaultEffects
+                }
             }
         }
 
@@ -71,13 +73,14 @@ Item {
             anchors.left: isHorizontal ? undefined : parent.left
 
             radius: Tokens.rounding.full
-            // Changed undefined to 0 to fix "Unable to assign [undefined] to double"
             implicitWidth: isHorizontal ? parent.width / 2 : 0
             implicitHeight: isHorizontal ? 0 : parent.height / 2
-            opacity: isHorizontal ? (view.contentX < view.contentWidth - parent.width + Tokens.padding.small ? 0 : 1) : (view.contentY < view.contentHeight - parent.height + Tokens.padding.small ? 0 : 1)
+            opacity: isHorizontal ? (view.contentX < view.contentWidth - parent.width + Tokens.padding.extraSmall ? 0 : 1) : (view.contentY < view.contentHeight - parent.height + Tokens.padding.extraSmall ? 0 : 1)
 
             Behavior on opacity {
-                Anim {}
+                Anim {
+                    type: Anim.DefaultEffects
+                }
             }
         }
     }
@@ -86,7 +89,7 @@ Item {
         id: view
 
         anchors.fill: parent
-        spacing: Tokens.spacing.normal
+        spacing: Tokens.spacing.medium
         interactive: false
         
         orientation: isHorizontal ? ListView.Horizontal : ListView.Vertical
@@ -223,7 +226,7 @@ Item {
         drag.maximumX: 0
         drag.minimumX: isHorizontal ? Math.min(0, view.width - view.contentWidth - Tokens.padding.small) : 0
         drag.maximumY: 0
-        drag.minimumY: isHorizontal ? 0 : Math.min(0, view.height - view.contentHeight - Tokens.padding.small)
+        drag.minimumY: isHorizontal ? 0 : Math.min(0, view.height - view.contentHeight - Tokens.padding.extraSmall)
 
         onPressed: event => startPos = isHorizontal ? event.x : event.y
 
@@ -244,11 +247,9 @@ Item {
         id: ws
 
         required property HyprlandWorkspace modelData
-        
         readonly property int size: isHorizontal ?
-            (label.Layout.preferredWidth + (hasWindows ? windows.implicitWidth + Tokens.padding.small : 0)) : 
-            (label.Layout.preferredHeight + (hasWindows ? windows.implicitHeight + Tokens.padding.small : 0))
-            
+            (label.Layout.preferredWidth + (hasWindows ? windows.implicitWidth + Tokens.padding.extraSmall : 0)) : 
+            (label.Layout.preferredHeight + (hasWindows ? windows.implicitHeight + Tokens.padding.extraSmall : 0))
         property int wsId
         property string icon
         property bool hasWindows
@@ -297,8 +298,8 @@ Item {
             asynchronous: true
 
             Layout.alignment: isHorizontal ? (Qt.AlignVCenter | Qt.AlignLeft) : (Qt.AlignHCenter | Qt.AlignTop)
-            Layout.preferredWidth: isHorizontal ? (Tokens.sizes.bar.innerWidth - Tokens.padding.small * 2) : -1
-            Layout.preferredHeight: isHorizontal ? -1 : (Tokens.sizes.bar.innerWidth - Tokens.padding.small * 2)
+            Layout.preferredWidth: isHorizontal ? (Tokens.sizes.bar.innerWidth - Tokens.padding.small) : -1
+            Layout.preferredHeight: isHorizontal ? -1 : (Tokens.sizes.bar.innerWidth - Tokens.padding.small)
 
             sourceComponent: ws.icon.length === 1 ? letterComp : iconComp
 

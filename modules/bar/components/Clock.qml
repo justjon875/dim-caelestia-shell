@@ -10,7 +10,8 @@ StyledRect {
     id: root
 
     readonly property color colour: Colours.palette.m3tertiary
-    readonly property int padding: Config.bar.clock.background ? Tokens.padding.normal : Tokens.padding.small
+    readonly property int padding: Config.bar.clock.background ? Tokens.padding.medium : Tokens.padding.extraSmall
+    readonly property var font: Tokens.font.body.builders.small.scale(1.1)
 
     readonly property bool isHorizontal: Config.bar.position === "top" || Config.bar.position === "bottom"
 
@@ -31,9 +32,9 @@ StyledRect {
         flow: isHorizontal ? GridLayout.LeftToRight : GridLayout.TopToBottom
 
         Loader {
+            Layout.alignment: Qt.AlignHCenter
             asynchronous: true
             Layout.alignment: Qt.AlignVCenter | Qt.AlignHCenter
-
             active: Config.bar.clock.showIcon
             visible: active
 
@@ -50,8 +51,7 @@ StyledRect {
 
             horizontalAlignment: StyledText.AlignHCenter
             text: isHorizontal ? Time.format("ddd d") : Time.format("ddd\nd")
-            font.pointSize: Tokens.font.size.smaller
-            font.family: Tokens.font.family.sans
+            font: Tokens.font.body.small
             color: root.colour
         }
 
@@ -67,12 +67,48 @@ StyledRect {
 
         StyledText {
             Layout.alignment: Qt.AlignVCenter | Qt.AlignHCenter
-
-            horizontalAlignment: StyledText.AlignHCenter
-            text: isHorizontal ? Time.format(GlobalConfig.services.useTwelveHourClock ? "hh:mm A" : "hh:mm") : Time.format(GlobalConfig.services.useTwelveHourClock ? "hh\nmm\nA" : "hh\nmm")
-            font.pointSize: Tokens.font.size.smaller
-            font.family: Tokens.font.family.mono
+            text: isHorizontal ? Time.format(GlobalConfig.services.useTwelveHourClock ? "hh:mm" : "HH:mm") : Time.hourStr
+            font: root.font.build()
             color: root.colour
+
+            TextMetrics {
+                id: hourMetrics
+
+                font: root.font.build()
+                text: Time.hourStr
+            }
+        }
+
+        StyledText {
+            Layout.topMargin: -parent.spacing - 4
+            Layout.alignment: Qt.AlignHCenter
+            text: Time.minuteStr
+            font: {
+                const scale = text === "11" ? 1.15 : Math.min(1.05, Math.max(hourMetrics.width, minMetrics.width) / minMetrics.width);
+                return root.font.width(scale * 100).letterSpacing(scale).build();
+            }
+            color: root.colour
+
+            TextMetrics {
+                id: minMetrics
+
+                font: root.font.build()
+                text: Time.minuteStr
+            }
+        }
+
+        Loader {
+            Layout.topMargin: -parent.spacing - 4
+            Layout.alignment: Qt.AlignHCenter
+            asynchronous: true
+            active: GlobalConfig.services.useTwelveHourClock
+            visible: active
+
+            sourceComponent: StyledText {
+                text: Time.amPmStr.toLowerCase()
+                font: Tokens.font.body.builders.small.scale(0.9).build()
+                color: root.colour
+            }
         }
     }
 }

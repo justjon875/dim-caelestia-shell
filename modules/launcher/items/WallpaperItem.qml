@@ -23,11 +23,11 @@ Item {
         opacity = Qt.binding(() => PathView.onPath ? 1 : 0);
     }
 
-    implicitWidth: image.width + Tokens.padding.larger * 2
-    implicitHeight: image.height + label.height + Tokens.spacing.small / 2 + Tokens.padding.large + Tokens.padding.normal
+    implicitWidth: image.width + Tokens.padding.medium * 2
+    implicitHeight: image.height + label.height + Tokens.spacing.extraSmall + Tokens.padding.large + Tokens.padding.medium
 
     StateLayer {
-        radius: Tokens.rounding.normal
+        radius: Tokens.rounding.large
         onClicked: {
             Wallpapers.setWallpaper(root.modelData.path);
             root.visibilities.launcher = false;
@@ -41,7 +41,9 @@ Item {
         level: 4
 
         Behavior on opacity {
-            Anim {}
+            Anim {
+                type: Anim.DefaultEffects
+            }
         }
     }
 
@@ -51,7 +53,7 @@ Item {
         anchors.horizontalCenter: parent.horizontalCenter
         y: Tokens.padding.large
         color: Colours.tPalette.m3surfaceContainer
-        radius: Tokens.rounding.normal
+        radius: Tokens.rounding.large
 
         implicitWidth: Tokens.sizes.launcher.wallpaperWidth
         implicitHeight: implicitWidth / 16 * 9
@@ -60,8 +62,7 @@ Item {
             anchors.centerIn: parent
             text: "image"
             color: Colours.tPalette.m3outline
-            font.pointSize: Tokens.font.size.extraLarge * 2
-            font.weight: 600
+            fontStyle: Tokens.font.icon.builders.extraLarge.scale(2).weight(Font.DemiBold).build()
             visible: !Images.isVideo(root.modelData.name)
         }
 
@@ -69,8 +70,7 @@ Item {
             anchors.centerIn: parent
             text: "videocam"
             color: Colours.tPalette.m3outline
-            font.pointSize: Tokens.font.size.extraLarge * 2
-            font.weight: 600
+            fontStyle: Tokens.font.icon.builders.extraLarge.scale(2).weight(Font.DemiBold).build()
             visible: Images.isVideo(root.modelData.name)
         }
 
@@ -90,15 +90,15 @@ Item {
         id: label
 
         anchors.top: image.bottom
-        anchors.topMargin: Tokens.spacing.small / 2
+        anchors.topMargin: Tokens.spacing.extraSmall
         anchors.horizontalCenter: parent.horizontalCenter
 
-        width: image.width - Tokens.padding.normal * 2
+        width: image.width - Tokens.padding.medium * 2
         horizontalAlignment: Text.AlignHCenter
         elide: Text.ElideRight
         renderType: Text.QtRendering
         text: root.modelData.relativePath
-        font.pointSize: Tokens.font.size.normal
+        font: Tokens.font.label.medium
     }
 
     Behavior on scale {
@@ -106,6 +106,8 @@ Item {
     }
 
     Behavior on opacity {
-        Anim {}
+        Anim {
+            type: Anim.DefaultEffects
+        }
     }
 }

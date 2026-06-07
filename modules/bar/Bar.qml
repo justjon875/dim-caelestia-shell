@@ -126,8 +126,8 @@ GridLayout {
         }
     }
 
-    columnSpacing: Tokens.spacing.normal
-    rowSpacing: Tokens.spacing.normal
+    columnSpacing: Tokens.spacing.medium
+    rowSpacing: Tokens.spacing.medium
     readonly property real spacing: isHorizontal ? columnSpacing : rowSpacing
 
     Repeater {

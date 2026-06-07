@@ -22,8 +22,8 @@ StyledRect {
     radius: Tokens.rounding.full
 
     clip: true
-    implicitWidth: isHorizontal ? (iconColumn.implicitWidth + Tokens.padding.normal * 2 - (Config.bar.status.showLockStatus && !Hypr.capsLock && !Hypr.numLock ? iconColumn.spacing : 0)) : Tokens.sizes.bar.innerWidth
-    implicitHeight: isHorizontal ? Tokens.sizes.bar.innerWidth : (iconColumn.implicitHeight + Tokens.padding.normal * 2 - (Config.bar.status.showLockStatus && !Hypr.capsLock && !Hypr.numLock ? iconColumn.spacing : 0))
+    implicitWidth: isHorizontal ? (iconColumn.implicitWidth + Tokens.padding.medium * 2 - (Config.bar.status.showLockStatus && !Hypr.capsLock && !Hypr.numLock ? iconColumn.spacing : 0)) : Tokens.sizes.bar.innerWidth
+    implicitHeight: isHorizontal ? Tokens.sizes.bar.innerWidth : (iconColumn.implicitHeight + Tokens.padding.medium * 2 - (Config.bar.status.showLockStatus && !Hypr.capsLock && !Hypr.numLock ? iconColumn.spacing : 0))
 
     GridLayout {
         id: iconColumn
@@ -31,19 +31,19 @@ StyledRect {
         anchors.left: parent.left
         anchors.right: parent.right
         anchors.bottom: isHorizontal ? undefined : parent.bottom
-        anchors.bottomMargin: isHorizontal ? 0 : Tokens.padding.normal
+        anchors.bottomMargin: isHorizontal ? 0 : Tokens.padding.medium
         anchors.top: undefined
-        anchors.topMargin: isHorizontal ? Tokens.padding.normal : 0
-        anchors.leftMargin: isHorizontal ? Tokens.padding.normal : 0
-        anchors.rightMargin: isHorizontal ? Tokens.padding.normal : 0
+        anchors.topMargin: isHorizontal ? Tokens.padding.medium : 0
+        anchors.leftMargin: isHorizontal ? Tokens.padding.medium : 0
+        anchors.rightMargin: isHorizontal ? Tokens.padding.medium : 0
         anchors.verticalCenter: isHorizontal ? parent.verticalCenter : undefined
 
         columns: isHorizontal ? -1 : 1
         rows: isHorizontal ? 1 : -1
         flow: isHorizontal ? GridLayout.LeftToRight : GridLayout.TopToBottom
 
-        columnSpacing: Tokens.spacing.smaller / 2
-        rowSpacing: Tokens.spacing.smaller / 2
+        columnSpacing: Tokens.spacing.medium / 2
+        rowSpacing: Tokens.spacing.medium / 2
         readonly property real spacing: isHorizontal ? columnSpacing : rowSpacing
 
         // Lock keys status
@@ -74,7 +74,9 @@ StyledRect {
                         color: root.colour
 
                         Behavior on opacity {
-                            Anim {}
+                            Anim {
+                                type: Anim.DefaultEffects
+                            }
                         }
 
                         Behavior on scale {
@@ -111,7 +113,9 @@ StyledRect {
                         color: root.colour
 
                         Behavior on opacity {
-                            Anim {}
+                            Anim {
+                                type: Anim.DefaultEffects
+                            }
                         }
 
                         Behavior on scale {
@@ -164,7 +168,7 @@ StyledRect {
                 animate: true
                 text: Hypr.kbLayout
                 color: root.colour
-                font.family: Tokens.font.family.mono
+                font: Tokens.font.mono.medium
             }
         }
 
@@ -204,8 +208,8 @@ StyledRect {
                 columns: isHorizontal ? -1 : 1
                 rows: isHorizontal ? 1 : -1
                 flow: isHorizontal ? GridLayout.LeftToRight : GridLayout.TopToBottom
-                columnSpacing: Tokens.spacing.smaller / 2
-                rowSpacing: Tokens.spacing.smaller / 2
+                columnSpacing: Tokens.spacing.medium / 2
+                rowSpacing: Tokens.spacing.medium / 2
 
                 // Bluetooth icon
                 MaterialIcon {
@@ -283,15 +287,7 @@ StyledRect {
                             return "rocket_launch";
                         return "balance";
                     }
-
-                    const perc = UPower.displayDevice.percentage;
-                    const charging = [UPowerDeviceState.Charging, UPowerDeviceState.FullyCharged, UPowerDeviceState.PendingCharge].includes(UPower.displayDevice.state);
-                    if (perc === 1)
-                        return charging ? "battery_charging_full" : "battery_full";
-                    let level = Math.floor(perc * 7);
-                    if (charging && (level === 4 || level === 1))
-                        level--;
-                    return charging ? `battery_charging_${(level + 3) * 10}` : `battery_${level}_bar`;
+                    return Icons.getBatteryIcon(UPower.displayDevice.percentage, [UPowerDeviceState.Charging, UPowerDeviceState.FullyCharged, UPowerDeviceState.PendingCharge].includes(UPower.displayDevice.state));
                 }
                 color: !UPower.onBattery || UPower.displayDevice.percentage > 0.2 ? root.colour : Colours.palette.m3error
                 fill: 1

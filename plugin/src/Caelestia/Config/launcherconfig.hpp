@@ -126,7 +126,7 @@ class LauncherConfig : public ConfigObject {
                 { u"name"_s, u"Settings"_s },
                 { u"icon"_s, u"settings"_s },
                 { u"description"_s, u"Configure the shell"_s },
-                { u"command"_s, QStringList{ u"caelestia"_s, u"shell"_s, u"controlCenter"_s, u"open"_s } },
+                { u"command"_s, QStringList{ u"caelestia"_s, u"shell"_s, u"nexus"_s, u"open"_s } },
             }),
             vmap({
                 { u"name"_s, u"Emoji"_s },

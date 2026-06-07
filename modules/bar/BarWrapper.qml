@@ -20,7 +20,7 @@ Item {
     readonly property bool disabled: Strings.testRegexList(Config.bar.excludedScreens, screen.name)
     readonly property string position: Config.bar.position
 
-    readonly property int padding: Math.max(Tokens.padding.smaller, Config.border.thickness)
+    readonly property int padding: Math.max(Tokens.padding.small, Config.border.thickness)
     readonly property int contentWidth: Tokens.sizes.bar.innerWidth + padding * 2
     readonly property int exclusiveZone: !disabled && (Config.bar.persistent || visibilities.bar) ? contentWidth : Config.border.thickness
     readonly property bool shouldBeVisible: !fullscreen && !disabled && (Config.bar.persistent || visibilities.bar || isHovered)
@@ -44,7 +44,7 @@ Item {
     readonly property int clampedHeight: isHorizontal ? clampedThickness : root.height
 
     clip: true
-    visible: (isHorizontal ? height : width) > 0
+    visible: isHorizontal ? height > Config.border.thickness : width > Config.border.thickness
     implicitWidth: isHorizontal ? 0 : (fullscreen ? 0 : Config.border.thickness)
     implicitHeight: isHorizontal ? (fullscreen ? 0 : Config.border.thickness) : 0
 
@@ -86,6 +86,7 @@ Item {
         id: horizontalBar
         Bar {
             anchors.fill: parent
+            width: root.contentWidth
             screen: root.screen
             visibilities: root.visibilities
             popouts: root.popouts // qmllint disable incompatible-type

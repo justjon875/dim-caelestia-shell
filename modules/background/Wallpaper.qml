@@ -57,12 +57,12 @@ Item {
 
             Row {
                 anchors.centerIn: parent
-                spacing: Tokens.spacing.large
+                spacing: Tokens.spacing.largeIncreased
 
                 MaterialIcon {
                     text: "sentiment_stressed"
                     color: Colours.palette.m3onSurfaceVariant
-                    font.pointSize: Tokens.font.size.extraLarge * 5
+                    fontStyle: Tokens.font.icon.builders.extraLarge.scale(5).build()
                 }
 
                 Column {
@@ -72,13 +72,12 @@ Item {
                     StyledText {
                         text: qsTr("Wallpaper missing?")
                         color: Colours.palette.m3onSurfaceVariant
-                        font.pointSize: Tokens.font.size.extraLarge * 2
-                        font.bold: true
+                        font: Tokens.font.body.builders.large.size(28 * 2).weight(Font.Bold).build()
                     }
 
                     StyledRect {
-                        implicitWidth: selectWallText.implicitWidth + Tokens.padding.large * 2
-                        implicitHeight: selectWallText.implicitHeight + Tokens.padding.small * 2
+                        implicitWidth: selectWallText.implicitWidth + Tokens.padding.extraLargeIncreased
+                        implicitHeight: selectWallText.implicitHeight + Tokens.padding.small
 
                         radius: Tokens.rounding.full
                         color: Colours.palette.m3primary
@@ -105,7 +104,7 @@ Item {
 
                             text: qsTr("Set it now!")
                             color: Colours.palette.m3onPrimary
-                            font.pointSize: Tokens.font.size.large
+                            font: Tokens.font.body.large
                         }
                     }
                 }
@@ -206,10 +205,15 @@ Item {
             }
         }
 
-        transitions: Transition {
+        Behavior on opacity {
             Anim {
-                target: img
-                properties: "opacity,scale"
+                type: Anim.SlowEffects
+            }
+        }
+
+        Behavior on scale {
+            Anim {
+                type: Anim.Emphasized
             }
         }
     }
