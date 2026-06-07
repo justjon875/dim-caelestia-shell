@@ -22,17 +22,18 @@ Item {
 
     readonly property real nonAnimWidth: content.shouldBeActive ? content.implicitWidth :
                                          winfo.shouldBeActive ? winfo.implicitWidth :
-                                         controlCenter.shouldBeActive ? controlCenter.implicitWidth :
+                                         nexus.shouldBeActive ? nexus.implicitWidth :
                                          content.implicitWidth
     readonly property real nonAnimHeight: content.shouldBeActive ? content.implicitHeight :
                                           winfo.shouldBeActive ? winfo.implicitHeight :
-                                          controlCenter.shouldBeActive ? controlCenter.implicitHeight :
+                                          nexus.shouldBeActive ? nexus.implicitHeight :
                                           content.implicitHeight
     readonly property Item current: (content.item as Content)?.current ?? null
     readonly property bool isDetached: detachedMode.length > 0
 
     property alias currentName: popoutState.currentName
     property alias hasCurrent: popoutState.hasCurrent
+    property alias dockModel: popoutState.dockModel
     property real currentCenter
 
     property string detachedMode
@@ -129,7 +130,13 @@ Item {
 
         sourceComponent: WindowInfo {
             screen: root.screen
-            client: Hypr.activeToplevel
+            clientAddress: popoutState.selectedClientAddress
+        }
+
+        onShouldBeActiveChanged: {
+            if (!shouldBeActive) {
+                popoutState.selectedClientAddress = "";
+            }
         }
     }
 
