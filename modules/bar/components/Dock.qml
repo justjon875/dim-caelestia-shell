@@ -452,6 +452,9 @@ Item {
                         break;
                     }
                 } else {
+                    const isAppSteamGame = app.id.toLowerCase().startsWith("steam_app_") || app.appClass.toLowerCase().startsWith("steam_app_");
+                    if (isAppSteamGame) continue;
+
                     const baseId = app.id.toLowerCase().replace(".desktop", "");
                     if (app.appClass.toLowerCase() === appClass.toLowerCase() || 
                         app.id.toLowerCase().includes(appClass.toLowerCase()) || 
