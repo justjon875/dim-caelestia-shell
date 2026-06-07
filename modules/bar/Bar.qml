@@ -45,6 +45,7 @@ GridLayout {
             closeTray();
 
         if (!ch) {
+            if (popouts.hasCurrent && (popouts.currentName === "dockcontext" || popouts.currentName === "dockhover" || popouts.currentName === "activewindow")) return;
             popouts.hasCurrent = false;
             return;
         }
@@ -95,6 +96,16 @@ GridLayout {
             } else {
                 popouts.hasCurrent = false;
             }
+        } else if (id === "dock") {
+            if (popouts.hasCurrent && (popouts.currentName === "dockcontext" || popouts.currentName === "dockhover" || popouts.currentName === "activewindow")) return;
+            
+            const item = ch.item;
+            if (item && typeof item.handleHover === "function") {
+                const relPos = pos - (isHorizontal ? ch.x : ch.y);
+                item.handleHover(relPos, isHorizontal, popouts);
+                return;
+            }
+            popouts.hasCurrent = false;
         } else {
             popouts.hasCurrent = false;
         }
@@ -157,6 +168,16 @@ GridLayout {
                     sourceComponent: Workspaces {
                         screen: root.screen
                         fullscreen: root.fullscreen
+                    }
+                }
+            }
+            DelegateChoice {
+                roleValue: "dock"
+                delegate: WrappedLoader {
+                    Layout.fillWidth: true
+                    visible: !root.fullscreen
+                    sourceComponent: Dock {
+                        bar: root
                     }
                 }
             }

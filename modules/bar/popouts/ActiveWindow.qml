@@ -12,23 +12,14 @@ Item {
 
     required property PopoutState popouts
 
-<<<<<<< HEAD
-    implicitWidth: Tokens.sizes.bar.windowPreviewSize
-=======
     implicitWidth: Hypr.activeToplevel ? child.implicitWidth : -Tokens.padding.extraLargeIncreased
->>>>>>> upstream/main
     implicitHeight: child.implicitHeight
 
     Column {
         id: child
 
         anchors.centerIn: parent
-<<<<<<< HEAD
-        width: parent.width
-        spacing: Tokens.spacing.normal
-=======
         spacing: Tokens.spacing.medium
->>>>>>> upstream/main
 
         RowLayout {
             id: detailsRow

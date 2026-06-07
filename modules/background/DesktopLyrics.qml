@@ -26,7 +26,7 @@ Item {
     readonly property color safePrimary: useLightSet ? Colours.palette.m3primaryContainer : Colours.palette.m3primary
     readonly property color safeSecondary: useLightSet ? Colours.palette.m3secondaryContainer : Colours.palette.m3secondary
     readonly property color safeTertiary: useLightSet ? Colours.palette.m3tertiaryContainer : Colours.palette.m3tertiary
-    readonly property string sansFont: GlobalConfig.appearance.font.family.sans || "Sans Serif"
+    readonly property string sansFont: GlobalConfig.appearance.font.body.family || "Sans Serif"
     readonly property int alignment: Config.background.desktopLyrics.alignment
     readonly property bool autoHide: Config.background.desktopLyrics.autoHide
     readonly property bool allWindowsFloating: Hypr.monitorFor(screen)?.activeWorkspace?.toplevels?.values.every(t => t.lastIpcObject?.floating) ?? true
@@ -81,21 +81,21 @@ Item {
                 target: prevLyricItem
                 property: "y"
                 to: root.targetPrevY
-                duration: Tokens.anim.durations.normal
+                duration: Tokens.anim.durations.expressiveDefaultEffects
                 easing.type: Easing.OutCubic
             }
             NumberAnimation {
                 target: lyricContainer
                 property: "y"
                 to: root.targetCenterY
-                duration: Tokens.anim.durations.normal
+                duration: Tokens.anim.durations.expressiveDefaultEffects
                 easing.type: Easing.OutCubic
             }
             NumberAnimation {
                 target: nextLyricItem
                 property: "y"
                 to: root.targetNextY
-                duration: Tokens.anim.durations.normal
+                duration: Tokens.anim.durations.expressiveDefaultEffects
                 easing.type: Easing.OutCubic
             }
         }
@@ -229,7 +229,7 @@ Item {
                     anchors.fill: parent
                     text: root.previousLyricText
                     font.family: root.sansFont
-                    font.pointSize: Tokens.font.size.normal * root.lyricsScale
+                    font.pointSize: Tokens.font.body.medium.pointSize * root.lyricsScale
                     color: root.safeSecondary
                     opacity: 0.6
                     wrapMode: Text.WordWrap
@@ -279,7 +279,7 @@ Item {
                     width: parent.width
                     text: root.displayedLyric
                     font.family: root.sansFont
-                    font.pointSize: Tokens.font.size.larger * 1.3 * root.lyricsScale
+                    font.pointSize: Tokens.font.title.medium.pointSize * 1.3 * root.lyricsScale
                     font.weight: Font.Bold
                     color: Colours.palette.m3primary
                     wrapMode: Text.WordWrap
@@ -293,7 +293,7 @@ Item {
 
                     Behavior on color {
                         CAnim {
-                            duration: Tokens.anim.durations.small
+                            duration: Tokens.anim.durations.expressiveFastEffects
                         }
                     }
                 }
@@ -313,7 +313,7 @@ Item {
                     anchors.fill: parent
                     text: root.nextLyricText
                     font.family: root.sansFont
-                    font.pointSize: Tokens.font.size.normal * root.lyricsScale
+                    font.pointSize: Tokens.font.body.medium.pointSize * root.lyricsScale
                     color: root.safeSecondary
                     opacity: 0.6
                     wrapMode: Text.WordWrap

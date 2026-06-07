@@ -5,6 +5,7 @@ import Caelestia.Config
 import Caelestia.Services
 import qs.components
 import qs.services
+import "../../../components/controls"
 
 Item {
     id: root

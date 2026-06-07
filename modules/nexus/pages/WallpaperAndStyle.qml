@@ -158,6 +158,19 @@ PageBase {
             }
 
             IconTextButton {
+                icon: "image_search"
+                text: qsTr("Wallhaven")
+                font: Tokens.font.body.large
+                isRound: true
+                shapeMorph: true
+                type: IconTextButton.Tonal
+                horizontalPadding: Tokens.padding.extraLarge
+                verticalPadding: Tokens.padding.medium
+                disabled: !Config.background.wallpaperEnabled
+                onClicked: root.nState.openSubPage(4) // Wallhaven page
+            }
+
+            IconTextButton {
                 icon: "palette"
                 text: qsTr("Colours")
                 font: Tokens.font.body.large

@@ -17,6 +17,7 @@ ConnectedRect {
     property real value
 
     signal moved(value: real)
+    signal interaction(value: real)
 
     implicitHeight: rowLayout.implicitHeight + rowLayout.anchors.margins + rowLayout.anchors.topMargin
 
@@ -80,7 +81,10 @@ ConnectedRect {
                     radius: Tokens.rounding.small
                     value: root.value
                     enabled: root.enabled
-                    onInteraction: v => root.moved(v)
+                    onInteraction: v => {
+                        root.moved(v);
+                        root.interaction(v);
+                    }
                 }
             }
         }

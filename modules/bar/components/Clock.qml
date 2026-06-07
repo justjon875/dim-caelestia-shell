@@ -32,7 +32,6 @@ StyledRect {
         flow: isHorizontal ? GridLayout.LeftToRight : GridLayout.TopToBottom
 
         Loader {
-            Layout.alignment: Qt.AlignHCenter
             asynchronous: true
             Layout.alignment: Qt.AlignVCenter | Qt.AlignHCenter
             active: Config.bar.clock.showIcon

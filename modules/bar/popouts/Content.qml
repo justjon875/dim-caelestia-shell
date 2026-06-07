@@ -126,6 +126,25 @@ Item {
             sourceComponent: LockStatus {}
         }
 
+        Popout {
+            name: "notifications"
+            sourceComponent: Notifications {}
+        }
+
+        Popout {
+            name: "dockhover"
+            sourceComponent: DockHover {
+                popouts: root.popouts
+            }
+        }
+
+        Popout {
+            name: "dockcontext"
+            sourceComponent: DockContext {
+                popouts: root.popouts
+            }
+        }
+
         Repeater {
             model: ScriptModel {
                 values: SystemTray.items.values.filter(i => !GlobalConfig.bar.tray.hiddenIcons.includes(i.id))

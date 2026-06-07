@@ -130,5 +130,101 @@ PageBase {
                 }
             }
         }
+
+        // Sound effects
+        StyledText {
+            Layout.fillWidth: true
+            Layout.topMargin: Tokens.spacing.large - parent.spacing
+            text: qsTr("Sound effects")
+            font: Tokens.font.body.small
+            color: Colours.palette.m3primary
+        }
+
+        ToggleRow {
+            Layout.fillWidth: true
+            first: true
+            text: qsTr("Enable sound effects")
+            checked: GlobalConfig.audio.sounds.enabled
+            onToggled: GlobalConfig.audio.sounds.enabled = checked
+        }
+        
+        SliderRow {
+            Layout.fillWidth: true
+            icon: "volume_up"
+            label: qsTr("SFX Volume")
+            valueLabel: Math.round(value * 100) + "%"
+            value: GlobalConfig.audio.sounds.sfxVolume
+            enabled: GlobalConfig.audio.sounds.enabled
+            onMoved: v => GlobalConfig.audio.sounds.sfxVolume = v
+            onInteraction: v => Audio.playEffectTick()
+        }
+
+        SliderRow {
+            Layout.fillWidth: true
+            icon: "notifications"
+            label: qsTr("Notification Volume")
+            valueLabel: Math.round(value * 100) + "%"
+            value: GlobalConfig.audio.sounds.notificationVolume
+            enabled: GlobalConfig.audio.sounds.enabled
+            onMoved: v => GlobalConfig.audio.sounds.notificationVolume = v
+            onInteraction: v => Audio.playNotification()
+        }
+
+        ToggleRow {
+            Layout.fillWidth: true
+            text: qsTr("Camera click")
+            checked: GlobalConfig.audio.sounds.cameraClick
+            enabled: GlobalConfig.audio.sounds.enabled
+            onToggled: GlobalConfig.audio.sounds.cameraClick = checked
+        }
+        
+        ToggleRow {
+            Layout.fillWidth: true
+            text: qsTr("Charging started")
+            checked: GlobalConfig.audio.sounds.chargingStarted
+            enabled: GlobalConfig.audio.sounds.enabled
+            onToggled: GlobalConfig.audio.sounds.chargingStarted = checked
+        }
+        
+        ToggleRow {
+            Layout.fillWidth: true
+            text: qsTr("Volume tick")
+            checked: GlobalConfig.audio.sounds.effectTick
+            enabled: GlobalConfig.audio.sounds.enabled
+            onToggled: GlobalConfig.audio.sounds.effectTick = checked
+        }
+        
+        ToggleRow {
+            Layout.fillWidth: true
+            text: qsTr("Screen lock")
+            checked: GlobalConfig.audio.sounds.lock
+            enabled: GlobalConfig.audio.sounds.enabled
+            onToggled: GlobalConfig.audio.sounds.lock = checked
+        }
+        
+        ToggleRow {
+            Layout.fillWidth: true
+            text: qsTr("Screen unlock")
+            checked: GlobalConfig.audio.sounds.unlock
+            enabled: GlobalConfig.audio.sounds.enabled
+            onToggled: GlobalConfig.audio.sounds.unlock = checked
+        }
+        
+        ToggleRow {
+            Layout.fillWidth: true
+            text: qsTr("Low battery")
+            checked: GlobalConfig.audio.sounds.lowBattery
+            enabled: GlobalConfig.audio.sounds.enabled
+            onToggled: GlobalConfig.audio.sounds.lowBattery = checked
+        }
+        
+        ToggleRow {
+            Layout.fillWidth: true
+            last: true
+            text: qsTr("Screen record")
+            checked: GlobalConfig.audio.sounds.screenRecord
+            enabled: GlobalConfig.audio.sounds.enabled
+            onToggled: GlobalConfig.audio.sounds.screenRecord = checked
+        }
     }
 }

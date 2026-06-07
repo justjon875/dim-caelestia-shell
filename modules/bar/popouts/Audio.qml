@@ -94,7 +94,10 @@ Item {
                 implicitHeight: parent.implicitHeight
 
                 value: Audio.volume
-                onInteraction: value => Audio.setVolume(value)
+                onInteraction: value => {
+                    Audio.setVolume(value);
+                    Audio.playEffectTick();
+                }
             }
         }
 

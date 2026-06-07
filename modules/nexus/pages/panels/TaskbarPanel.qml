@@ -11,6 +11,13 @@ PageBase {
     title: qsTr("Taskbar")
     isSubPage: true
 
+    readonly property list<MenuItem> positionItems: [
+        MenuItem { text: qsTr("Top"); property string value: "top" },
+        MenuItem { text: qsTr("Bottom"); property string value: "bottom" },
+        MenuItem { text: qsTr("Left"); property string value: "left" },
+        MenuItem { text: qsTr("Right"); property string value: "right" }
+    ]
+
     ColumnLayout {
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: parent.top
@@ -36,13 +43,14 @@ PageBase {
             Layout.fillWidth: true
             label: qsTr("Position")
             subtext: qsTr("Screen edge to place the bar on")
-            active: Config.bar.position
-            menuItems: [
-                MenuItem { label: qsTr("Top"); value: "top" },
-                MenuItem { label: qsTr("Bottom"); value: "bottom" },
-                MenuItem { label: qsTr("Left"); value: "left" },
-                MenuItem { label: qsTr("Right"); value: "right" }
-            ]
+            active: {
+                for (let i = 0; i < positionItems.length; i++) {
+                    if (positionItems[i].value === Config.bar.position)
+                        return positionItems[i];
+                }
+                return positionItems[0];
+            }
+            menuItems: positionItems
             onSelected: item => GlobalConfig.bar.position = item.value
         }
 

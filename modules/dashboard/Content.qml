@@ -8,6 +8,7 @@ import Caelestia
 import Caelestia.Config
 import qs.components
 import qs.components.filedialog
+import "../../services"
 
 Item {
     id: root
@@ -41,6 +42,12 @@ Item {
                 iconName: "cloud",
                 text: qsTr("Weather"),
                 enabled: Config.dashboard.showWeather
+            },
+            {
+                component: terminalComponent,
+                iconName: "terminal",
+                text: qsTr("Terminal"),
+                enabled: true
             }
         ];
         return allTabs.filter(tab => tab.enabled);
@@ -182,6 +189,13 @@ Item {
 
                 WeatherTab {}
             }
+
+            Component {
+                id: terminalComponent
+
+                TerminalTab {}
+            }
+
 
             Behavior on contentX {
                 Anim {}
