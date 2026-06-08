@@ -51,12 +51,21 @@ Item {
     property real startNextY: targetNextY + nextLyricItem.height + lyricSpacing
 
     onCurrentLyricIndexChanged: {
-        if (currentLyricIndex >= 0 && Lyrics.hasLyrics) {
-            displayedLyric = (Lyrics.lyrics[currentLyricIndex] ?? "").replace(/\u00A0/g, " ");
-            previousLyricText = currentLyricIndex > 0 ? (Lyrics.lyrics[currentLyricIndex - 1] ?? "").replace(/\u00A0/g, " ") : "";
-            nextLyricText = currentLyricIndex < Lyrics.lyrics.length - 1 ? (Lyrics.lyrics[currentLyricIndex + 1] ?? "").replace(/\u00A0/g, " ") : "";
-
+        if (Lyrics.hasLyrics) {
+            if (currentLyricIndex >= 0) {
+                displayedLyric = (Lyrics.lyrics[currentLyricIndex] ?? "").replace(/\u00A0/g, " ");
+                previousLyricText = currentLyricIndex > 0 ? (Lyrics.lyrics[currentLyricIndex - 1] ?? "").replace(/\u00A0/g, " ") : "";
+                nextLyricText = currentLyricIndex < Lyrics.lyrics.length - 1 ? (Lyrics.lyrics[currentLyricIndex + 1] ?? "").replace(/\u00A0/g, " ") : "";
+            } else {
+                displayedLyric = "";
+                previousLyricText = "";
+                nextLyricText = (Lyrics.lyrics[0] ?? "").replace(/\u00A0/g, " ");
+            }
             lyricSlide.running = true;
+        } else {
+            displayedLyric = "";
+            previousLyricText = "";
+            nextLyricText = "";
         }
     }
 
@@ -119,8 +128,10 @@ Item {
     function reloadTrack() {
         const p = Players.active;
         if (p) {
+            console.log("DesktopLyrics reloadTrack: ", p.trackTitle, " artist: ", p.trackArtist);
             Lyrics.setTrack(p.trackArtist, p.trackTitle, p.trackAlbum, p.length);
         } else {
+            console.log("DesktopLyrics reloadTrack: NO PLAYER");
             Lyrics.clearTrack();
         }
     }
@@ -147,9 +158,15 @@ Item {
     function forceUpdate() {
         if (Lyrics.hasLyrics) {
             currentLyricIndex = Lyrics.indexForTime(Players.active?.position ?? 0);
-            displayedLyric = (Lyrics.lyrics[currentLyricIndex] ?? "").replace(/\u00A0/g, " ");
-            previousLyricText = currentLyricIndex > 0 ? (Lyrics.lyrics[currentLyricIndex - 1] ?? "").replace(/\u00A0/g, " ") : "";
-            nextLyricText = currentLyricIndex < Lyrics.lyrics.length - 1 ? (Lyrics.lyrics[currentLyricIndex + 1] ?? "").replace(/\u00A0/g, " ") : "";
+            if (currentLyricIndex >= 0) {
+                displayedLyric = (Lyrics.lyrics[currentLyricIndex] ?? "").replace(/\u00A0/g, " ");
+                previousLyricText = currentLyricIndex > 0 ? (Lyrics.lyrics[currentLyricIndex - 1] ?? "").replace(/\u00A0/g, " ") : "";
+                nextLyricText = currentLyricIndex < Lyrics.lyrics.length - 1 ? (Lyrics.lyrics[currentLyricIndex + 1] ?? "").replace(/\u00A0/g, " ") : "";
+            } else {
+                displayedLyric = "";
+                previousLyricText = "";
+                nextLyricText = (Lyrics.lyrics[0] ?? "").replace(/\u00A0/g, " ");
+            }
             lyricSlide.running = true;
         } else {
             currentLyricIndex = -1;
