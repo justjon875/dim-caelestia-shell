@@ -122,21 +122,22 @@ Singleton {
         }
     }
 
+    function clear(): void {
+        for (const notif of root.list.slice())
+            notif.close();
+    }
+
     // qmllint disable unresolved-type
     CustomShortcut {
         // qmllint enable unresolved-type
         name: "clearNotifs"
         description: "Clear all notifications"
-        onPressed: {
-            for (const notif of root.list.slice())
-                notif.close();
-        }
+        onPressed: root.clear()
     }
 
     IpcHandler {
         function clear(): void {
-            for (const notif of root.list.slice())
-                notif.close();
+            root.clear();
         }
 
         function isDndEnabled(): bool {
