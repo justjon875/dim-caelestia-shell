@@ -262,6 +262,7 @@ Item {
                         anchors.centerIn: parent
                         implicitSize: Math.round(Tokens.sizes.dashboard.mediaSectionWidth / 5 * root.lyricsScale)
                         containsIcon: true
+                        color: root.safeSecondary
                     }
                 }
 
