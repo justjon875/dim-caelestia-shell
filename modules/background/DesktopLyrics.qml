@@ -34,7 +34,7 @@ Item {
     readonly property bool allWindowsFloating: Hypr.monitorFor(screen)?.activeWorkspace?.toplevels?.values.every(t => t.lastIpcObject?.floating) ?? true
     readonly property bool shouldHide: autoHide && !allWindowsFloating
 
-    readonly property bool hasLyrics: Lyrics.hasLyrics
+    property bool hasLyrics: Lyrics.hasLyrics
     property int currentLyricIndex: -1
     readonly property bool isCurrentActive: currentLyricIndex >= 0
 
@@ -178,6 +178,7 @@ Item {
 
     Connections {
         function onHasLyricsChanged() {
+            root.hasLyrics = Lyrics.hasLyrics;
             root.forceUpdate();
         }
         target: Lyrics
@@ -187,6 +188,7 @@ Item {
     implicitHeight: 180 * root.lyricsScale
     
     opacity: ((root.hasLyrics || Lyrics.loading) && !root.shouldHide) ? 1 : 0
+    onOpacityChanged: console.log("DesktopLyrics opacity:", opacity, "hasLyrics:", root.hasLyrics, "loading:", Lyrics.loading, "shouldHide:", root.shouldHide)
     visible: opacity > 0
 
     Behavior on opacity {
