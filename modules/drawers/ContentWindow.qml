@@ -221,8 +221,10 @@ StyledWindow {
             panel: panels.utilities
             deformAmount: panels.sidebar.visible ? 0.1 : 0.15
             exclude: panels.sidebar.offsetScale > 0.08 ? [] : [sidebarBg]
-            topLeftRadius: Config.bar.position === "right" ? radius : Math.max(0, Math.min(1, panels.sidebar.offsetScale / 0.3)) * radius
-            topRightRadius: Config.bar.position === "right" ? Math.max(0, Math.min(1, panels.sidebar.offsetScale / 0.3)) * radius : radius
+            topLeftRadius: Config.bar.position === "right" ? radius : (Config.bar.position === "bottom" ? radius : Math.max(0, Math.min(1, panels.sidebar.offsetScale / 0.3)) * radius)
+            topRightRadius: Config.bar.position === "right" ? Math.max(0, Math.min(1, panels.sidebar.offsetScale / 0.3)) * radius : (Config.bar.position === "bottom" ? radius : Math.max(0, Math.min(1, panels.sidebar.offsetScale / 0.3)) * radius)
+            bottomLeftRadius: Config.bar.position === "bottom" ? Math.max(0, Math.min(1, panels.sidebar.offsetScale / 0.3)) * radius : radius
+            bottomRightRadius: Config.bar.position === "bottom" ? Math.max(0, Math.min(1, panels.sidebar.offsetScale / 0.3)) * radius : radius
         }
 
         PanelBg {
