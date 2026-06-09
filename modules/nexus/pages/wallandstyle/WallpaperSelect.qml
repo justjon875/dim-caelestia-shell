@@ -201,14 +201,34 @@ PageBase {
             Repeater {
                 model: root.sortColors
 
-                StateLayer {
-                    width: 36
-                    height: 36
-                    radius: Tokens.rounding.full
-                    color: modelData
-                    selected: root.sortColor === modelData
+                Item {
+                    width: 40
+                    height: 40
 
-                    onClicked: root.toggleSortColor(modelData)
+                    // Selection indicator ring
+                    Rectangle {
+                        anchors.centerIn: parent
+                        width: 36
+                        height: 36
+                        radius: Tokens.rounding.full
+                        color: "transparent"
+                        border.width: root.sortColor === modelData ? 3 : 0
+                        border.color: Colours.palette.m3onSurface
+                    }
+
+                    // Color fill
+                    Rectangle {
+                        anchors.centerIn: parent
+                        width: 32
+                        height: 32
+                        radius: Tokens.rounding.full
+                        color: modelData
+                    }
+
+                    MouseArea {
+                        anchors.fill: parent
+                        onClicked: root.toggleSortColor(modelData)
+                    }
                 }
             }
         }
