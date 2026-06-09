@@ -80,12 +80,9 @@ GridLayout {
         Item {
             id: iconRoot
 
-            implicitWidth: Tokens.sizes.bar.innerWidth - Tokens.padding.small
-            implicitHeight: Tokens.sizes.bar.innerWidth - Tokens.padding.small
-
+            // Track if this position was active (independent of which workspace)
             readonly property bool active: root.activeWsId === root.ws
             property int randShape: MaterialShape.Slanted
-            // Track if this position was active (independent of which workspace)
             property bool wasPositionActive: false
             property int lastKnownWs: -1
             property int prevActiveWsId: -1
@@ -93,27 +90,29 @@ GridLayout {
             // Track the previous workspace at this position (before current change)
             property int prevWs: -1
 
-            // Function to handle activation state changes
+            // Watch for workspace ID changes while inactive by using a binding
+            property int watchedWs: root.ws
+
+            // Track the last watched ws separately for detecting changes
+            property int lastWatchedWs: -1
+
+            // JavaScript functions
             function handleActivation() {
                 const wsChanged = lastKnownWs !== root.ws;
                 if (active && (!wasPositionActive || wsChanged)) {
                     const shapes = [MaterialShape.Slanted, MaterialShape.Arch, MaterialShape.Oval, MaterialShape.Pill, MaterialShape.Triangle, MaterialShape.Arrow, MaterialShape.Diamond, MaterialShape.Pentagon, MaterialShape.Gem, MaterialShape.VerySunny, MaterialShape.Sunny, MaterialShape.Cookie4Sided, MaterialShape.Cookie6Sided, MaterialShape.Cookie7Sided, MaterialShape.Cookie9Sided, MaterialShape.Cookie12Sided, MaterialShape.Clover4Leaf, MaterialShape.Clover8Leaf, MaterialShape.SoftBurst, MaterialShape.Ghostish];
                     const shuffled = [...shapes].sort(() => Math.random() - 0.5);
                     randShape = shuffled[0];
-                    // Set shape and scale immediately to avoid binding flicker
                     wsShape.shape = randShape;
                     wsShape.scale = 1 / 3;
-                    // Stop opposite animation and reset to ensure clean start
                     deactivateAnim.stop();
                     activateAnim.fromValue = 1 / 3;
                     activateAnim.toValue = 2 / 3;
                     activateAnim.running = true;
                 } else if (!active && (wasPositionActive || wsChanged)) {
                     const targetShape = root.isOccupied ? MaterialShape.Square : MaterialShape.Circle;
-                    // Set shape and scale immediately to avoid binding flicker
                     wsShape.shape = targetShape;
                     wsShape.scale = 1 / 3;
-                    // Stop opposite animation and reset to ensure clean start
                     activateAnim.stop();
                     deactivateAnim.stop();
                 }
@@ -123,16 +122,8 @@ GridLayout {
                 prevActiveWsId = root.activeWsId;
             }
 
-            // Watch for workspace ID changes while inactive by using a binding
-            // This property will update whenever root.ws changes
-            property int watchedWs: root.ws
-
-            // Track the last watched ws separately for detecting changes
-            property int lastWatchedWs: -1
-
-            // Handle when the watched workspace changes while inactive
+            // Signal handlers
             onWatchedWsChanged: {
-                // If workspace changed and we're not active, update shape
                 if (lastWatchedWs !== -1 && watchedWs !== lastWatchedWs && !active) {
                     activateAnim.stop();
                     deactivateAnim.stop();
@@ -142,7 +133,6 @@ GridLayout {
                 lastWatchedWs = watchedWs;
             }
 
-            // Handle when activeWsId changes even if active state doesn't
             onPrevActiveWsIdChanged: {
                 if (prevActiveWsId !== -1 && prevActiveWsId !== root.activeWsId && active) {
                     handleActivation();
@@ -151,14 +141,15 @@ GridLayout {
 
             onActiveChanged: handleActivation()
 
+            // Bindings
+            implicitWidth: Tokens.sizes.bar.innerWidth - Tokens.padding.small
+            implicitHeight: Tokens.sizes.bar.innerWidth - Tokens.padding.small
+
             // Initialize state when component is created
             Component.onCompleted: {
-                // Manually trigger activation handling if already active
-                // since onActiveChanged won't fire for initial state
                 if (active) {
                     handleActivation();
                 } else {
-                    // Set initial shape for inactive workspace
                     wsShape.shape = root.isOccupied ? MaterialShape.Square : MaterialShape.Circle;
                 }
                 wasPositionActive = active;
@@ -182,6 +173,7 @@ GridLayout {
 
                 Behavior on scale {
                     enabled: !activateAnim.running && !deactivateAnim.running
+
                     Anim {
                         type: Anim.DefaultEffects
                     }
