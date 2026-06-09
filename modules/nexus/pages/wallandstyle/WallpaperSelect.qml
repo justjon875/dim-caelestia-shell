@@ -17,6 +17,8 @@ import qs.modules.nexus.common
 PageBase {
     id: root
 
+    title: qsTr("Select wallpaper")
+
     property color sortColor: "transparent"
     property var colorDistances: ({})
     property int sortVersion: 0
