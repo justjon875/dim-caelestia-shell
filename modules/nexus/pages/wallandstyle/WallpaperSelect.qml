@@ -3,6 +3,7 @@ pragma ComponentBehavior: Bound
 import QtQuick
 import QtQuick.Layouts
 import Quickshell
+import Caelestia
 import Caelestia.Components
 import Caelestia.Config
 import Caelestia.Models
@@ -18,6 +19,63 @@ PageBase {
 
     title: qsTr("Wallpapers")
     isSubPage: true
+
+    // Color sorting state
+    property color sortColor: "transparent"
+    property var colorDistances: ({})
+    property int sortVersion: 0
+
+    // Helper function to compute color distance (Euclidean distance in RGB space)
+    function colorDistance(c1: color, c2: color): real {
+        const dr = c1.r - c2.r;
+        const dg = c1.g - c2.g;
+        const db = c1.b - c2.b;
+        return Math.sqrt(dr * dr + dg * dg + db * db);
+    }
+
+    // List of sorting colors
+    readonly property list<color> sortColors: ["#e53935" // Red
+        , "#1e88e5" // Blue
+        , "#43a047" // Green
+        , "#fdd835" // Yellow
+        , "#8e24aa" // Purple
+        , "#fb8c00"  // Orange
+    ]
+
+    function toggleSortColor(color: color) {
+        if (root.sortColor === color) {
+            root.sortColor = "transparent";
+        } else {
+            root.sortColor = color;
+            root.analyzeColors();
+        }
+    }
+
+    function analyzeColors() {
+        const walls = Wallpapers.list;
+        const baseDir = Paths.wallsdir;
+        const newDistances = {};
+
+        for (const w of walls) {
+            if (w.parentDir === baseDir) {
+                newDistances[w.path] = colorDistance(root.wallpaperColors[w.path] ?? "black", root.sortColor);
+            }
+        }
+
+        root.colorDistances = newDistances;
+        root.sortVersion++;
+    }
+
+    // Store dominant colors for wallpapers as they load
+    property var wallpaperColors: ({})
+
+    // Cleanup analyzed colors when sort is cleared
+    onSortColorChanged: {
+        if (sortColor === "transparent") {
+            wallpaperColors = ({});
+            colorDistances = ({});
+        }
+    }
 
     ColumnLayout {
         anchors.horizontalCenter: parent.horizontalCenter
@@ -134,6 +192,27 @@ PageBase {
             }
         }
 
+        // Color sorting buttons
+        Row {
+            Layout.topMargin: Tokens.spacing.medium
+            Layout.alignment: Qt.AlignHCenter
+            spacing: Tokens.spacing.medium
+
+            Repeater {
+                model: root.sortColors
+
+                StateLayer {
+                    width: 36
+                    height: 36
+                    radius: Tokens.rounding.full
+                    color: modelData
+                    selected: root.sortColor === modelData
+
+                    onClicked: root.toggleSortColor(modelData)
+                }
+            }
+        }
+
         StyledText {
             Layout.topMargin: Tokens.spacing.large
             text: qsTr("Local wallpapers")
@@ -165,14 +244,25 @@ PageBase {
                             list.push(w);
                         }
                     }
-                    list.push(...Object.values(categories));
-                    list.sort((a, b) => ((a.parentDir === baseDir) - (b.parentDir === baseDir)) || a.name.localeCompare(b.name));
+
+                    // Sort by color distance if sortColor is set
+                    if (root.sortColor !== "transparent") {
+                        list.sort((a, b) => {
+                            const distA = root.colorDistances[a.path] ?? 999999;
+                            const distB = root.colorDistances[b.path] ?? 999999;
+                            return distA - distB;
+                        });
+                    } else {
+                        list.sort((a, b) => a.name.localeCompare(b.name));
+                    }
+
                     while (list.length < Config.nexus.wallpapersPerRow)
                         list.push(null);
                     return list;
                 }
 
                 WallItem {
+                    id: wallItem
                     required property FileSystemEntry modelData
 
                     // Empty placeholders for sizing
@@ -197,6 +287,29 @@ PageBase {
                         } else {
                             Wallpapers.setWallpaper(modelData.path);
                             root.nState.closeSubPage();
+                        }
+                    }
+
+                    // Analyze color when image loads and sorting is active
+                    onSourceChanged: {
+                        if (root.sortColor !== "transparent" && modelData && modelData.parentDir === Paths.wallsdir) {
+                            colorAnalyzer.source = modelData.path;
+                        }
+                    }
+
+                    ImageAnalyser {
+                        id: colorAnalyzer
+
+                        rescaleSize: 64
+                        onDominantColourChanged: {
+                            if (modelData) {
+                                root.wallpaperColors[modelData.path] = dominantColour;
+                                // Update distance for this wallpaper
+                                if (root.sortColor !== "transparent") {
+                                    root.colorDistances[modelData.path] = root.colorDistance(dominantColour, root.sortColor);
+                                    root.sortVersion++;
+                                }
+                            }
                         }
                     }
                 }
