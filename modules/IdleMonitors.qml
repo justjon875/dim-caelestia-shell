@@ -17,22 +17,29 @@ Scope {
         if (!action)
             return;
 
-        if (action === "lock")
+        if (action === "lock") {
             lock.lock.locked = true;
-        else if (action === "unlock")
+            Audio.playLock();
+        } else if (action === "unlock") {
             lock.lock.locked = false;
-        else if (typeof action === "string")
+        } else if (typeof action === "string") {
             Hypr.dispatch(action);
-        else
+        } else {
             Quickshell.execDetached(action);
+        }
     }
 
     LogindManager {
         onAboutToSleep: {
-            if (GlobalConfig.general.idle.lockBeforeSleep)
+            if (GlobalConfig.general.idle.lockBeforeSleep) {
                 root.lock.lock.locked = true;
+                Audio.playLock();
+            }
         }
-        onLockRequested: root.lock.lock.locked = true
+        onLockRequested: {
+            root.lock.lock.locked = true;
+            Audio.playLock();
+        }
         onUnlockRequested: root.lock.lock.unlock()
     }
 

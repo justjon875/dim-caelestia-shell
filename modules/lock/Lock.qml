@@ -15,11 +15,10 @@ Scope {
 
         signal unlock
 
+        onUnlock: Audio.playUnlock()
+
         onLockedChanged: {
-            if (locked)
-                Audio.playLock();
-            else
-                Audio.playUnlock();
+            // Nothing needed here anymore since we play sounds explicitly
         }
 
         LockSurface {
@@ -53,7 +52,10 @@ Scope {
         // qmllint enable unresolved-type
         name: "lock"
         description: "Lock the current session"
-        onPressed: lock.locked = true
+        onPressed: {
+            lock.locked = true;
+            Audio.playLock();
+        }
     }
 
     // qmllint disable unresolved-type
@@ -67,6 +69,7 @@ Scope {
     IpcHandler {
         function lock(): void {
             lock.locked = true;
+            Audio.playLock();
         }
 
         function unlock(): void {
