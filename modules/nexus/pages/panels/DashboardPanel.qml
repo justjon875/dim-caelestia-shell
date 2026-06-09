@@ -84,11 +84,19 @@ PageBase {
 
         ToggleRow {
             Layout.fillWidth: true
-            last: true
             text: qsTr("Recolor media GIF")
             subtext: qsTr("Apply system theme colors to the media GIF")
             checked: Config.dashboard.colorizeMediaGif
             onToggled: GlobalConfig.dashboard.colorizeMediaGif = checked
+        }
+
+        ToggleRow {
+            Layout.fillWidth: true
+            last: true
+            text: qsTr("Hyprland splash")
+            subtext: qsTr("Show the current Hyprland splash text")
+            checked: Config.dashboard.showHyprlandSplash
+            onToggled: GlobalConfig.dashboard.showHyprlandSplash = checked
         }
 
         // Performance widgets

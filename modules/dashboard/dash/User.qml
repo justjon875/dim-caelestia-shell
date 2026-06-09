@@ -1,6 +1,7 @@
 pragma ComponentBehavior: Bound
 
 import QtQuick
+import Quickshell.Io
 import M3Shapes
 import Caelestia.Config
 import qs.components
@@ -23,6 +24,19 @@ Item {
 
     Behavior on pfpFallbackColour {
         CAnim {}
+    }
+
+    property var hyprlandSplashLines: []
+
+    Process {
+        running: Config.dashboard.showHyprlandSplash
+        command: ["hyprctl", "splash"]
+        stdout: StdioCollector {
+            onStreamFinished: {
+                // Limit to 2 lines max
+                hyprlandSplashLines = text.trim().split("\n").slice(0, 2);
+            }
+        }
     }
 
     Item {
@@ -260,16 +274,28 @@ Item {
                 fontStyle: wmText.font
             }
 
-            StyledText {
-                id: wmText
-
+            Column {
                 anchors.verticalCenter: parent.verticalCenter
-                anchors.verticalCenterOffset: Math.round(fontInfo.pointSize * 0.1)
-                text: SysInfo.wm + "..."
-                color: Colours.palette.m3onSecondaryContainer
-                font: Tokens.font.body.builders.small.vaxis("slnt", -4).build()
-                width: Math.min(implicitWidth, Tokens.sizes.dashboard.userWidth - wmContainer.x - Tokens.padding.medium * 2 - wmIcon.implicitWidth - wmLabel.spacing - Tokens.padding.extraLarge)
-                elide: Text.ElideRight
+                spacing: 0
+
+                StyledText {
+                    id: wmText
+
+                    text: Config.dashboard.showHyprlandSplash && hyprlandSplashLines.length > 0 ? hyprlandSplashLines[0] : SysInfo.wm + "..."
+                    color: Colours.palette.m3onSecondaryContainer
+                    font: Tokens.font.body.builders.small.vaxis("slnt", -4).build()
+                    width: Math.min(implicitWidth, Tokens.sizes.dashboard.userWidth - wmContainer.x - Tokens.padding.medium * 2 - wmIcon.implicitWidth - wmLabel.spacing - Tokens.padding.extraLarge)
+                    elide: Text.ElideRight
+                }
+
+                StyledText {
+                    visible: Config.dashboard.showHyprlandSplash && hyprlandSplashLines.length > 1
+                    text: hyprlandSplashLines[1] || ""
+                    color: Colours.palette.m3onSecondaryContainer
+                    font: Tokens.font.body.builders.small.vaxis("slnt", -4).build()
+                    width: wmText.width
+                    elide: Text.ElideRight
+                }
             }
         }
     }
