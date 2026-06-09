@@ -193,7 +193,7 @@ or a devshell. The shell can then be run via `caelestia-shell`.
 
 For home-manager, you can also use the Caelestia's home manager module (explained in [configuring](https://github.com/caelestia-dots/shell?tab=readme-ov-file#home-manager-module)) that installs and configures the shell and the CLI.
 
-### Manual installation
+### Manual installation (this fork)
 
 Dependencies:
 
@@ -224,34 +224,19 @@ Build dependencies:
 -   [`cmake`](https://cmake.org)
 -   [`ninja`](https://github.com/ninja-build/ninja)
 
-To install the shell manually, install all dependencies and clone this repo to `$XDG_CONFIG_HOME/quickshell/caelestia`.
-Then simply build and install using `cmake`.
+To install the shell manually, install all dependencies and clone **this fork** to `$XDG_CONFIG_HOME/quickshell/caelestia`.
+Then simply run the install script:
 
 ```sh
 cd $XDG_CONFIG_HOME/quickshell
-git clone https://github.com/caelestia-dots/shell.git caelestia
+git clone https://github.com/dim-ghub/caelestia-shell.git caelestia
 
 cd caelestia
-cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/
-cmake --build build
-sudo cmake --install build
+./install.sh
 ```
 
 > [!TIP]
-> You can customise the installation location via the `cmake` flags `INSTALL_LIBDIR`, `INSTALL_QMLDIR` and
-> `INSTALL_QSCONFDIR` for the libraries (the beat detector), QML plugin and Quickshell config directories
-> respectively. If changing the library directory, remember to set the `CAELESTIA_LIB_DIR` environment
-> variable to the custom directory when launching the shell.
->
-> e.g. installing to `~/.config/quickshell/caelestia` for easy local changes:
->
-> ```sh
-> mkdir -p ~/.config/quickshell/caelestia
-> cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/ -DINSTALL_QSCONFDIR=~/.config/quickshell/caelestia
-> cmake --build build
-> sudo cmake --install build
-> sudo chown -R $USER ~/.config/quickshell/caelestia
-> ```
+> By default, the script will use the latest version tag from [upstream](https://github.com/caelestia-dots/shell) to set the version number for the build. It does not download anything from upstream - it builds your local fork. You can also specify a version manually: `./install.sh 2.0.2`
 
 ## Usage
 
@@ -318,11 +303,12 @@ the command.
 
 If installed via the AUR package, simply update your system (e.g. using `yay`).
 
-If installed manually, you can update by running `git pull` in `$XDG_CONFIG_HOME/quickshell/caelestia`.
+If installed manually, pull the latest changes and re-run the install script:
 
 ```sh
 cd $XDG_CONFIG_HOME/quickshell/caelestia
 git pull
+./install.sh
 ```
 
 ## Configuring

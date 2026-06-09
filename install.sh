@@ -1,12 +1,14 @@
 #!/usr/bin/env bash
 
-# Caelestia Shell Fix & Global Installer Script
-# This script configures, builds, installs, and resolves dynamic library conflicts
-# introduced by old version leftovers.
+# Caelestia Shell Installer
+# This script configures, builds, and installs the shell from my fork.
+# It also cleans up legacy dynamic library conflicts from old installations.
 #
-# Usage: fix-install.sh [version]
-#   version    Optional version string (e.g., "1.0.0"). Defaults to "1.0.0"
-#              if not provided.
+# Usage: install.sh [version]
+#   version    Optional version string (e.g., "2.0.2"). Defaults to the latest
+#              tag from https://github.com/caelestia-dots/shell if not provided.
+#              Note: this only sets the version number for the build; it does
+#              not download anything from the upstream repo.
 
 set -euo pipefail
 
@@ -17,10 +19,23 @@ YELLOW='\033[1;33m'
 RED='\033[0;31m'
 NC='\033[0m' # No Color
 
-VERSION="${1:-1.0.0}"
+UPSTREAM_REPO="https://github.com/caelestia-dots/shell"
+
+# Fetch latest version from upstream if not provided
+if [ -n "${1:-}" ]; then
+    VERSION="$1"
+else
+    echo -e "${BLUE}Fetching latest upstream tag from ${UPSTREAM_REPO}...${NC}"
+    VERSION=$(git ls-remote --tags --sort=-v:refname "$UPSTREAM_REPO" 2>/dev/null | head -1 | grep -oP 'v\K[0-9]+\.[0-9]+\.[0-9]+' || echo "")
+    if [ -z "$VERSION" ]; then
+        echo -e "${RED}Error: Failed to fetch latest version from upstream. Please specify a version manually.${NC}"
+        exit 1
+    fi
+    echo -e "${GREEN}Using upstream version tag: v${VERSION}${NC}"
+fi
 
 echo -e "${BLUE}===================================================${NC}"
-echo -e "${BLUE}      Caelestia Shell Modernizer & Installer       ${NC}"
+echo -e "${BLUE}           Caelestia Shell Installer                ${NC}"
 echo -e "${BLUE}===================================================${NC}"
 
 # 1. Verify working directory
@@ -79,7 +94,7 @@ done
 sudo cmake --install "$(pwd)/build"
 
 echo -e "${GREEN}===================================================${NC}"
-echo -e "${GREEN}       Installation & Fix Completed Successfully!   ${NC}"
+echo -e "${GREEN}          Installation Completed Successfully!      ${NC}"
 echo -e "${GREEN}===================================================${NC}"
 echo -e "You can now start the shell using:"
 echo -e "  ${YELLOW}caelestia shell -d${NC}"
