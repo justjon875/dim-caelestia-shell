@@ -48,7 +48,7 @@ class BarWorkspaces : public ConfigObject {
     CONFIG_PROPERTY(int, maxWindowIcons, 5)
     CONFIG_PROPERTY(bool, activeTrail, false)
     CONFIG_GLOBAL_PROPERTY(bool, perMonitorWorkspaces, true)
-    CONFIG_PROPERTY(bool, useIcon, false)
+    CONFIG_PROPERTY(bool, useIcon, true)
     CONFIG_PROPERTY(QString, label, u"1"_s)
     CONFIG_PROPERTY(QString, occupiedLabel, u"1"_s)
     CONFIG_PROPERTY(QString, activeLabel, u"1"_s)

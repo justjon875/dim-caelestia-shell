@@ -51,6 +51,13 @@ PageBase {
 
         ToggleRow {
             Layout.fillWidth: true
+            text: qsTr("Use material icons for indicators")
+            checked: Config.bar.workspaces.useIcon
+            onToggled: GlobalConfig.bar.workspaces.useIcon = checked
+        }
+
+        ToggleRow {
+            Layout.fillWidth: true
             text: qsTr("Show windows")
             subtext: qsTr("Show icons of open windows on each workspace")
             checked: Config.bar.workspaces.showWindows
