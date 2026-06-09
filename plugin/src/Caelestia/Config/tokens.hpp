@@ -108,6 +108,10 @@ class FontSizeTokens : public ConfigObject {
     CONFIG_PROPERTY(int, large, 18)
     CONFIG_PROPERTY(int, extraLarge, 28)
 
+    CONFIG_PROPERTY(int, monoSmall, 12)
+    CONFIG_PROPERTY(int, monoMedium, 14)
+    CONFIG_PROPERTY(int, monoLarge, 16)
+
 public:
     explicit FontSizeTokens(QObject* parent = nullptr)
         : ConfigObject(parent) {}
