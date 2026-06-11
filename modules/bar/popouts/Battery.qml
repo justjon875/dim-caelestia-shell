@@ -2,7 +2,6 @@ pragma ComponentBehavior: Bound
 
 import QtQuick
 import QtQuick.Layouts
-import QtQuick.Effects
 import Quickshell.Services.UPower
 import Caelestia.Config
 import qs.components
@@ -74,65 +73,70 @@ ColumnLayout {
                         anchors.left: parent.left
                         anchors.right: parent.right
 
-                        Rectangle {
-                            id: liquidMask
-                            anchors.fill: parent
-                            radius: Tokens.rounding.medium
-                            visible: false
-                        }
-
                         Item {
-                            id: liquidUnclipped
-                            anchors.fill: parent
-                            visible: false
+                            id: liquidContainer
+                            anchors.bottom: parent.bottom
+                            anchors.left: parent.left
+                            anchors.right: parent.right
+                            
+                            height: parent.height * (UPower.displayDevice.isLaptopBattery ? UPower.displayDevice.percentage : 0)
+                            
+                            Behavior on height {
+                                NumberAnimation { duration: 300; easing.type: Easing.OutCubic }
+                            }
 
-                            Item {
-                                id: liquidContainer
+                            // The perfectly rounded solid block
+                            Rectangle {
+                                anchors.top: parent.top
+                                anchors.topMargin: waveLayer.opacity * Math.min(24, parent.height)
                                 anchors.bottom: parent.bottom
                                 anchors.left: parent.left
                                 anchors.right: parent.right
                                 
-                                height: parent.height * (UPower.displayDevice.isLaptopBattery ? UPower.displayDevice.percentage : 0)
+                                color: Colours.palette.m3primary
                                 
-                                Behavior on height {
-                                    NumberAnimation { duration: 300; easing.type: Easing.OutCubic }
-                                }
+                                bottomLeftRadius: Tokens.rounding.medium - 3
+                                bottomRightRadius: Tokens.rounding.medium - 3
+                                topLeftRadius: height >= batteryBody.height - 3 ? Tokens.rounding.medium - 3 : 0
+                                topRightRadius: height >= batteryBody.height - 3 ? Tokens.rounding.medium - 3 : 0
+                            }
 
+                            // The safely clipped subtle wave
+                            Item {
+                                id: waveLayer
+                                anchors.top: parent.top
+                                anchors.left: parent.left
+                                anchors.right: parent.right
+                                height: Math.min(25, parent.height)
+                                clip: true
+                                
+                                opacity: {
+                                    if (UPower.onBattery) return 0;
+                                    if (parent.height <= 30) return 0;
+                                    if (parent.height < 40) return (parent.height - 30) / 10.0;
+                                    return 1.0;
+                                }
+                                Behavior on opacity { NumberAnimation { duration: 300 } }
+                                
                                 Rectangle {
-                                    anchors.fill: parent
-                                    anchors.topMargin: 15
-                                    color: Colours.palette.m3primary
-                                }
-
-                                Item {
-                                    anchors.fill: parent
-                                    visible: !UPower.onBattery
+                                    width: 140; height: 140
+                                    anchors.horizontalCenter: parent.horizontalCenter
+                                    y: 8
                                     
-                                    Rectangle {
-                                        width: 140; height: 140
-                                        anchors.horizontalCenter: parent.horizontalCenter
-                                        y: -2
-                                        
-                                        color: Colours.palette.m3primary
-                                        radius: 60
-                                        
-                                        RotationAnimation on rotation {
-                                            loops: Animation.Infinite
-                                            from: 0; to: 360
-                                            duration: 5000
-                                        }
+                                    color: Colours.palette.m3primary
+                                    radius: 50
+                                    
+                                    RotationAnimation on rotation {
+                                        loops: Animation.Infinite
+                                        from: 0; to: 360
+                                        duration: 4000
+                                        running: waveLayer.opacity > 0
                                     }
                                 }
                             }
                         }
 
-                        MultiEffect {
-                            anchors.fill: parent
-                            source: liquidUnclipped
-                            maskEnabled: true
-                            maskSource: liquidMask
-                        }
-
+                        // The Battery Border
                         Rectangle {
                             anchors.fill: parent
                             color: "transparent"
