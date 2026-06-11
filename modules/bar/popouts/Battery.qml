@@ -111,7 +111,7 @@ ColumnLayout {
                                     Rectangle {
                                         width: 140; height: 140
                                         anchors.horizontalCenter: parent.horizontalCenter
-                                        y: -(height / 2) + 12
+                                        y: -2
                                         
                                         color: Colours.palette.m3primary
                                         radius: 60
