@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Layouts
 import Caelestia.Config
 import qs.components
+import qs.components.controls
 import qs.services
 
 Item {
@@ -15,6 +16,25 @@ Item {
 
     readonly property bool isBarHorizontal: Config.bar.position === "top" || Config.bar.position === "bottom"
     readonly property bool showPopoutSeparator: isBarHorizontal && root.visibilities.sidebar && popouts && popouts.hasCurrent && popouts.currentName !== "dockhover" && popouts.currentName !== "dockcontext" && popouts.currentName !== "activewindow"
+
+    property string activeTab: "notifications"
+
+    Connections {
+        target: GlobalConfig.ai
+        function onEnableGeminiChanged() { checkAiTab(); }
+        function onEnableChatgptChanged() { checkAiTab(); }
+        function onEnableOllamaChanged() { checkAiTab(); }
+    }
+
+    function checkAiTab() {
+        if (!GlobalConfig.ai.enableGemini && !GlobalConfig.ai.enableChatgpt && !GlobalConfig.ai.enableOllama) {
+            if (root.activeTab === "ai") {
+                root.activeTab = "notifications";
+            }
+        }
+    }
+
+    Component.onCompleted: checkAiTab()
 
     GridLayout {
         id: layout
@@ -31,9 +51,124 @@ Item {
             radius: Tokens.rounding.large
             color: Colours.tPalette.m3surfaceContainerLow
 
-            NotifDock {
-                props: root.props
-                visibilities: root.visibilities
+            ColumnLayout {
+                anchors.fill: parent
+                spacing: 0
+
+                // Tab Switcher Header
+                Item {
+                    id: headerContainer
+                    Layout.fillWidth: true
+                    implicitHeight: 48
+                    clip: true
+
+                    RowLayout {
+                        anchors.fill: parent
+                        anchors.leftMargin: Tokens.padding.medium
+                        anchors.rightMargin: Tokens.padding.medium
+                        spacing: 0
+
+                        Repeater {
+                            id: tabRepeater
+                            model: {
+                                var tabs = [
+                                    { id: "notifications", label: qsTr("Notifications"), icon: "notifications" }
+                                ];
+                                if (GlobalConfig.ai.enableGemini || GlobalConfig.ai.enableChatgpt || GlobalConfig.ai.enableOllama) {
+                                    tabs.push({ id: "ai", label: qsTr("AI Assistant"), icon: "smart_toy" });
+                                }
+                                return tabs;
+                            }
+
+                            delegate: Item {
+                                id: tabBtn
+
+                                required property var modelData
+
+                                readonly property bool active: root.activeTab === modelData.id
+
+                                Layout.fillWidth: true
+                                Layout.fillHeight: true
+
+                                StateLayer {
+                                    id: stateLayer
+                                    anchors.fill: parent
+                                    anchors.margins: 4
+                                    radius: Tokens.rounding.medium
+                                    color: Colours.palette.m3onSurface
+                                    onClicked: root.activeTab = tabBtn.modelData.id
+                                }
+
+                                RowLayout {
+                                    anchors.centerIn: parent
+                                    spacing: Tokens.spacing.extraSmall
+
+                                    MaterialIcon {
+                                        text: tabBtn.modelData.icon
+                                        color: tabBtn.active ? Colours.palette.m3primary : stateLayer.containsMouse ? Colours.palette.m3onSurface : Colours.palette.m3onSurfaceVariant
+                                        fontStyle: Tokens.font.icon.small
+                                        fill: tabBtn.active ? 1 : 0
+                                        Behavior on fill { Anim { type: Anim.DefaultEffects } }
+                                    }
+
+                                    StyledText {
+                                        text: tabBtn.modelData.label
+                                        color: tabBtn.active ? Colours.palette.m3primary : stateLayer.containsMouse ? Colours.palette.m3onSurface : Colours.palette.m3onSurfaceVariant
+                                        font: Tokens.font.label.medium
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    // Sliding Indicator
+                    Item {
+                        id: indicator
+                        anchors.verticalCenter: parent.bottom
+                        implicitHeight: 6
+                        
+                        readonly property real tabWidth: (headerContainer.width - Tokens.padding.medium * 2) / tabRepeater.count
+                        width: tabWidth - Tokens.padding.medium * 2
+                        x: Tokens.padding.medium + (root.activeTab === "notifications" ? 0 : tabWidth) + (tabWidth - width) / 2
+
+                        clip: true
+
+                        StyledRect {
+                            anchors.fill: parent
+                            color: Colours.palette.m3primary
+                            radius: Tokens.rounding.full
+                        }
+
+                        Behavior on x {
+                            Anim {}
+                        }
+                    }
+                }
+
+                // Divider
+                StyledRect {
+                    Layout.fillWidth: true
+                    implicitHeight: 1
+                    color: Colours.palette.m3outlineVariant
+                }
+
+                // Content Panel Stack
+                Item {
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+
+                    NotifDock {
+                        anchors.fill: parent
+                        visible: root.activeTab === "notifications"
+                        props: root.props
+                        visibilities: root.visibilities
+                    }
+
+                    AiAssistant {
+                        anchors.fill: parent
+                        visible: root.activeTab === "ai"
+                    }
+                }
             }
         }
 

@@ -13,6 +13,7 @@ qml_module(caelestia-config
         anim.cpp
         monitorconfigmanager.cpp
         audioconfig.hpp
+        aiconfig.hpp
         backgroundconfig.hpp
         barconfig.hpp
         borderconfig.hpp

@@ -8,6 +8,7 @@ namespace caelestia::config {
 
 class AppearanceConfig;
 class AudioConfig;
+class AiConfig;
 class BackgroundConfig;
 class BarConfig;
 class BorderConfig;
@@ -31,6 +32,7 @@ class GlobalConfig : public RootConfig {
     QML_ELEMENT
     QML_SINGLETON
     Q_MOC_INCLUDE("audioconfig.hpp")
+    Q_MOC_INCLUDE("aiconfig.hpp")
     Q_MOC_INCLUDE("appearanceconfig.hpp")
     Q_MOC_INCLUDE("backgroundconfig.hpp")
     Q_MOC_INCLUDE("barconfig.hpp")
@@ -70,6 +72,7 @@ class GlobalConfig : public RootConfig {
     CONFIG_SUBOBJECT(WInfoConfig, winfo)
     CONFIG_SUBOBJECT(UserPaths, paths)
     CONFIG_SUBOBJECT(AudioConfig, audio)
+    CONFIG_SUBOBJECT(AiConfig, ai)
 
 public:
     static GlobalConfig* instance();
