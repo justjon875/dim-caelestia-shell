@@ -33,9 +33,9 @@ Item {
 
     Item {
         anchors.fill: parent
-        anchors.leftMargin: Tokens.padding.largeIncreased
-        anchors.rightMargin: Tokens.padding.largeIncreased
-        anchors.margins: Tokens.padding.extraSmall
+        anchors.leftMargin: Tokens.padding.medium
+        anchors.rightMargin: Tokens.padding.medium
+        anchors.margins: Tokens.padding.small
 
         StyledText {
             id: emojiChar
