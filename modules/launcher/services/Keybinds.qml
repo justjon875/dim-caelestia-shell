@@ -21,6 +21,7 @@ QtObject {
 
                     for (const b of binds) {
                         const action = b.dispatcher + (b.arg ? " " + b.arg : "");
+                        const description = (b.has_description !== undefined && b.has_description && b.description) ? b.description : action;
                         
                         let mods = [];
                         const m = b.modmask;
@@ -44,7 +45,8 @@ QtObject {
 
                         formattedBinds.push({
                             bind: bindText,
-                            action: action
+                            action: action,
+                            description: description
                         });
                     }
                     
@@ -74,7 +76,7 @@ QtObject {
             return keybinds;
 
         const queryText = searchText.toLowerCase();
-        return keybinds.filter(k => k.bind.toLowerCase().includes(queryText) || k.action.toLowerCase().includes(queryText));
+        return keybinds.filter(k => k.bind.toLowerCase().includes(queryText) || k.description.toLowerCase().includes(queryText));
     }
 
     Component.onCompleted: loadKeybinds()
