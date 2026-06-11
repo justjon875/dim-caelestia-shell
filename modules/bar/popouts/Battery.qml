@@ -181,7 +181,18 @@ ColumnLayout {
                             return comps.join(" ") || fallback;
                         }
 
-                        text: UPower.displayDevice.isLaptopBattery ? qsTr("~ %1").arg(UPower.onBattery ? formatSeconds(UPower.displayDevice.timeToEmpty, "Calculating...") : formatSeconds(UPower.displayDevice.timeToFull, "Fully charged!")) : qsTr("No battery detected")
+                        text: {
+                            if (!UPower.displayDevice.isLaptopBattery)
+                                return qsTr("No battery detected");
+
+                            if (UPower.onBattery)
+                                return qsTr("~ %1").arg(formatSeconds(UPower.displayDevice.timeToEmpty, "Calculating..."));
+
+                            if (UPower.displayDevice.state === UPowerDeviceState.FullyCharged || UPower.displayDevice.percentage >= 1.0)
+                                return qsTr("Fully charged!");
+
+                            return qsTr("~ %1").arg(formatSeconds(UPower.displayDevice.timeToFull, "Calculating..."));
+                        }
                         color: Colours.palette.m3onSurfaceVariant
                         font: Tokens.font.body.builders.medium.weight(Font.Medium).build()
                     }
