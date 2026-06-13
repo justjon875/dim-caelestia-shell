@@ -14,6 +14,13 @@ WlSessionLockSurface {
     required property Pam pam
 
     readonly property alias unlocking: unlockAnim.running
+    readonly property real lockHeight: Math.min(root.screen?.width ?? 0, root.screen?.height ?? 0)
+
+    readonly property bool isPortrait: {
+        const monitor = Hypr.monitors.values.find(m => m.name === root.screen?.name);
+        const transform = monitor?.lastIpcObject?.transform ?? 0;
+        return transform === 1 || transform === 3 || transform === 5 || transform === 7;
+    }
 
     contentItem.Config.screen: screen.name
     contentItem.Tokens.screen: screen.name
@@ -143,12 +150,12 @@ WlSessionLockSurface {
                 Anim {
                     target: lockContent
                     property: "implicitWidth"
-                    to: (root.screen?.height ?? 0) * lockContent.Tokens.sizes.lock.heightMult * lockContent.Tokens.sizes.lock.ratio
+                    to: root.isPortrait ? root.lockHeight * lockContent.Tokens.sizes.lock.heightMult : root.lockHeight * lockContent.Tokens.sizes.lock.heightMult * lockContent.Tokens.sizes.lock.ratio
                 }
                 Anim {
                     target: lockContent
                     property: "implicitHeight"
-                    to: (root.screen?.height ?? 0) * lockContent.Tokens.sizes.lock.heightMult
+                    to: root.isPortrait ? root.lockHeight * lockContent.Tokens.sizes.lock.heightMult * lockContent.Tokens.sizes.lock.ratio : root.lockHeight * lockContent.Tokens.sizes.lock.heightMult
                 }
             }
         }
@@ -212,9 +219,12 @@ WlSessionLockSurface {
         Content {
             id: content
 
+            isPortrait: root.isPortrait
+            lockHeight: root.lockHeight
+
             anchors.centerIn: parent
-            width: (root.screen?.height ?? 0) * Tokens.sizes.lock.heightMult * Tokens.sizes.lock.ratio - Tokens.padding.extraLargeIncreased
-            height: (root.screen?.height ?? 0) * Tokens.sizes.lock.heightMult - Tokens.padding.extraLargeIncreased
+            width: root.isPortrait ? root.lockHeight * Tokens.sizes.lock.heightMult - Tokens.padding.extraLargeIncreased : root.lockHeight * Tokens.sizes.lock.heightMult * Tokens.sizes.lock.ratio - Tokens.padding.extraLargeIncreased
+            height: root.isPortrait ? root.lockHeight * Tokens.sizes.lock.heightMult * Tokens.sizes.lock.ratio - Tokens.padding.extraLargeIncreased : root.lockHeight * Tokens.sizes.lock.heightMult - Tokens.padding.extraLargeIncreased
 
             lock: root
             opacity: 0

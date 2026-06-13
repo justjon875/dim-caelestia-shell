@@ -4,25 +4,62 @@ import Caelestia.Config
 import qs.components
 import qs.services
 
-RowLayout {
+Item {
     id: root
 
     required property var lock
+    required property bool isPortrait
+    required property real lockHeight
 
-    spacing: Tokens.spacing.largeIncreased * 2
-
+    // Portrait layout
     ColumnLayout {
-        Layout.fillWidth: true
+        anchors.fill: parent
+        visible: root.isPortrait
         spacing: Tokens.spacing.medium
 
-        WeatherInfo {
+        RowLayout {
             Layout.fillWidth: true
-            rootHeight: root.height
+            spacing: Tokens.spacing.largeIncreased * 2
+
+            WeatherInfo {
+                Layout.fillWidth: true
+                rootHeight: root.height / Tokens.sizes.lock.ratio
+            }
+
+            Resources {
+                Layout.fillWidth: true
+            }
         }
 
-        Fetch {
+        Center {
+            Layout.alignment: Qt.AlignHCenter
+            lock: root.lock
+            isPortrait: root.isPortrait
+            lockHeight: root.lockHeight
+        }
+
+        RowLayout {
             Layout.fillWidth: true
-            rootHeight: root.height
+
+            spacing: Tokens.spacing.largeIncreased * 2
+
+            Fetch {
+                Layout.fillWidth: true
+                rootHeight: root.height
+            }
+
+            StyledRect {
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+
+                bottomRightRadius: Tokens.rounding.extraLarge
+                radius: Tokens.rounding.medium
+                color: Colours.tPalette.m3surfaceContainer
+
+                NotifDock {
+                    lock: root.lock
+                }
+            }
         }
 
         Media {
@@ -32,28 +69,59 @@ RowLayout {
         }
     }
 
-    Center {
-        lock: root.lock
-    }
+    // Landscape layout
+    RowLayout {
+        anchors.fill: parent
+        visible: !root.isPortrait
+        spacing: Tokens.spacing.largeIncreased * 2
 
-    ColumnLayout {
-        Layout.fillWidth: true
-        spacing: Tokens.spacing.medium
-
-        Resources {
+        ColumnLayout {
             Layout.fillWidth: true
+            spacing: Tokens.spacing.medium
+
+            WeatherInfo {
+                Layout.fillWidth: true
+                rootHeight: root.height
+            }
+
+            Fetch {
+                Layout.fillWidth: true
+                rootHeight: root.height
+            }
+
+            Media {
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+
+                lock: root.lock
+            }
         }
 
-        StyledRect {
+        Center {
+            lock: root.lock
+            isPortrait: root.isPortrait
+            lockHeight: root.lockHeight
+        }
+
+        ColumnLayout {
             Layout.fillWidth: true
-            Layout.fillHeight: true
+            spacing: Tokens.spacing.medium
 
-            bottomRightRadius: Tokens.rounding.extraLarge
-            radius: Tokens.rounding.medium
-            color: Colours.tPalette.m3surfaceContainer
+            Resources {
+                Layout.fillWidth: true
+            }
 
-            NotifDock {
-                lock: root.lock
+            StyledRect {
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+
+                bottomRightRadius: Tokens.rounding.extraLarge
+                radius: Tokens.rounding.medium
+                color: Colours.tPalette.m3surfaceContainer
+
+                NotifDock {
+                    lock: root.lock
+                }
             }
         }
     }

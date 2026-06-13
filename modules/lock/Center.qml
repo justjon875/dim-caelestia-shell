@@ -9,7 +9,9 @@ ColumnLayout {
     id: root
 
     required property var lock
-    readonly property real centerScale: Math.min(1, (lock.screen?.height ?? 1440) / 1440)
+    required property bool isPortrait
+    required property real lockHeight
+    readonly property real centerScale: isPortrait ? Math.min(1, lockHeight / 1440) : Math.min(1, (lock.screen?.height ?? 1440) / 1440)
     readonly property int centerWidth: Tokens.sizes.lock.centerWidth * centerScale
 
     Layout.preferredWidth: centerWidth
