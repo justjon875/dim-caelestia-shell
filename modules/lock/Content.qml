@@ -19,7 +19,7 @@ Item {
 
         RowLayout {
             Layout.fillWidth: true
-            spacing: Tokens.spacing.largeIncreased * 2
+            spacing: Tokens.spacing.largeIncreased
 
             WeatherInfo {
                 Layout.fillWidth: true
@@ -34,14 +34,13 @@ Item {
         Center {
             Layout.alignment: Qt.AlignHCenter
             lock: root.lock
-            isPortrait: root.isPortrait
             lockHeight: root.lockHeight
         }
 
         RowLayout {
             Layout.fillWidth: true
 
-            spacing: Tokens.spacing.largeIncreased * 2
+            spacing: Tokens.spacing.largeIncreased
 
             Fetch {
                 Layout.fillWidth: true
@@ -99,7 +98,6 @@ Item {
 
         Center {
             lock: root.lock
-            isPortrait: root.isPortrait
             lockHeight: root.lockHeight
         }
 

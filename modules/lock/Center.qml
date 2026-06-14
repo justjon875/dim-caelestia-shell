@@ -9,7 +9,6 @@ ColumnLayout {
     id: root
 
     required property var lock
-    required property bool isPortrait
     required property real lockHeight
 
     readonly property real centerScale: Math.min(1, root.lockHeight / 1440)
