@@ -19,6 +19,28 @@ PageBase {
         ToggleRow {
             Layout.fillWidth: true
             first: true
+            text: qsTr("Enable component")
+            checked: {
+                for (let i = 0; i < Config.bar.entries.length; i++) {
+                    if (Config.bar.entries[i].id === "activeWindow")
+                        return Config.bar.entries[i].enabled;
+                }
+                return false;
+            }
+            onToggled: {
+                let entries = GlobalConfig.bar.entries;
+                for (let i = 0; i < entries.length; i++) {
+                    if (entries[i].id === "activeWindow") {
+                        entries[i].enabled = checked;
+                        GlobalConfig.bar.entries = entries;
+                        break;
+                    }
+                }
+            }
+        }
+
+        ToggleRow {
+            Layout.fillWidth: true
             text: qsTr("Compact")
             checked: Config.bar.activeWindow.compact
             onToggled: GlobalConfig.bar.activeWindow.compact = checked
