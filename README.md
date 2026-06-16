@@ -1203,6 +1203,8 @@ For example, to disable the bar on DP-1:
             "kbLimit": true,
             "nowPlaying": false,
             "numLockChanged": true,
+            "transparency": false,
+            "transparencyBase": 0.85,
             "vpnChanged": true
         },
         "vpn": {
