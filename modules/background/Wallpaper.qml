@@ -1,6 +1,7 @@
 pragma ComponentBehavior: Bound
 
 import QtQuick
+import QtQuick.Effects
 import QtMultimedia
 import Caelestia.Config
 import qs.components
@@ -166,6 +167,16 @@ Item {
 
         opacity: 0
         scale: Wallpapers.showPreview ? 1 : 0.8
+
+        layer.enabled: Config.background.wallpaperRecolor && Colours.scheme !== "dynamic"
+        layer.effect: MultiEffect {
+            colorization: 0.65
+            colorizationColor: Colours.palette.m3primary
+
+            Behavior on colorizationColor {
+                CAnim {}
+            }
+        }
 
         states: State {
             name: "visible"
