@@ -4,8 +4,10 @@ import QtQuick
 import Quickshell.Io
 import Caelestia.Config
 import qs.components
+import qs.components.controls
 import qs.services
 import qs.modules.bar.components as BarComponents
+import M3Shapes
 
 StyledRect {
     id: root
@@ -65,6 +67,8 @@ StyledRect {
     color: Qt.alpha(Colours.tPalette.m3surfaceContainer, Config.bar.github.background ? Colours.tPalette.m3surfaceContainer.a : 0)
     radius: Tokens.rounding.full
 
+
+
     Grid {
         id: cells
 
@@ -76,14 +80,12 @@ StyledRect {
         Repeater {
             model: root.displayDays
 
-            delegate: Rectangle {
+            delegate: MaterialShape {
                 required property var modelData
 
                 width: root.cellSize
                 height: root.cellSize
-                radius: 2
-                border.width: 1
-                border.color: Qt.rgba(1, 1, 1, 0.08)
+                shape: MaterialShape.Square
                 color: modelData.color || "#2f2f2f"
             }
         }
