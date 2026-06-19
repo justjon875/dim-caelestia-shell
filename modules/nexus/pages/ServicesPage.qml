@@ -49,7 +49,7 @@ PageBase {
             text: "systemd"
         },
         MenuItem {
-            text: qsTr("Other")
+            text: "openrc"
         }
     ]
 
