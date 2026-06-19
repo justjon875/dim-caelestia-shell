@@ -30,6 +30,7 @@ Item {
         radius: Tokens.rounding.large
         onClicked: {
             Wallpapers.setWallpaper(root.modelData.path);
+            root.visibilities.launcher = false;
         }
     }
 
