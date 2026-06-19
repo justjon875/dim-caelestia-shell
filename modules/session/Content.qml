@@ -96,7 +96,6 @@ Column {
             let cmd = button.command.slice();
             if (!GlobalConfig.services.useSystemd && cmd.length > 0 && cmd[0] === "systemctl") {
                 cmd[0] = "loginctl";
-                if (cmd[1] === "suspend-then-hibernate") cmd[1] = "suspend";
             }
             Quickshell.execDetached(cmd);
         }
