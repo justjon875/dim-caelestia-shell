@@ -205,6 +205,17 @@ PageBase {
             enabled: Config.background.wallpaperEnabled
         }
 
+        SliderRow {
+            Layout.topMargin: Tokens.spacing.extraSmall / 2 - parent.spacing
+            Layout.fillWidth: true
+            icon: ""
+            label: qsTr("Recolor strength")
+            valueLabel: Math.round(value * 100) + "%"
+            value: Config.background.wallpaperRecolorStrength
+            enabled: Config.background.wallpaperRecolor && Config.background.wallpaperEnabled
+            onMoved: v => GlobalConfig.background.wallpaperRecolorStrength = v
+        }
+
         ToggleRow {
             Layout.topMargin: Tokens.spacing.extraSmall / 2 - parent.spacing
             Layout.fillWidth: true
