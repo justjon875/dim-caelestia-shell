@@ -36,7 +36,7 @@ This fork adds the following features on top of the official shell:
 
 Dependencies:
 
--   [`caelestia-cli`](https://github.com/caelestia-dots/cli)
+-   [`caelestia-cli` (this fork is recommended and required for some features to work)](https://github.com/dim-ghub/caelestia-cli)
 -   [`quickshell-git`](https://quickshell.outfoxxed.me) - this has to be the git version, not the latest tagged version
 -   [`ddcutil`](https://github.com/rockowitz/ddcutil)
 -   [`brightnessctl`](https://github.com/Hummer12007/brightnessctl)
