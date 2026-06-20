@@ -25,6 +25,7 @@ PageBase {
         "tray": { icon: "expand_more", name: qsTr("System tray") },
         "clock": { icon: "schedule", name: qsTr("Clock") },
         "statusIcons": { icon: "wifi", name: qsTr("Status icons") },
+        "dock": { icon: "apps", name: qsTr("Dock") },
         "power": { icon: "power_settings_new", name: qsTr("Power menu") }
     }
 
