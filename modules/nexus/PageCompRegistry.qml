@@ -106,6 +106,9 @@ QtObject {
 
                 // Taskbar component sub-pages
                 Component {
+                    BarComponents {}
+                }
+                Component {
                     BarWorkspaces {}
                 }
                 Component {
