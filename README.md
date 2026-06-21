@@ -24,6 +24,8 @@ This fork adds the following features on top of the official shell:
 - **Dashboard**: Developer console terminal tab with history and autocomplete.
 - **Bar**: MacOS-style app dock, Material workspace icons, DND toggle, and a live drag-and-drop components editor.
 - **Desktop**: Floating lyrics, Shimeji pets, dynamic wallpaper recoloring, and Bezel Mode.
+- **Lock Screen**: Configurable auto-lock on startup (`lockOnStartup`), redesigned profile and clock layout, and improved forecast UI.
+- **Hyprland**: Full support for the new Lua-based window focus and dispatching commands (`hl.dsp`).
 
 ## Installation
 
