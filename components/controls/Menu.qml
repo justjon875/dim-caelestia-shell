@@ -37,7 +37,7 @@ MouseArea {
     signal itemSelected(item: MenuItem)
 
     parent: {
-        let node = root.parent;
+        let node = root.attachTo;
         while (node && node.parent) {
             node = node.parent;
         }

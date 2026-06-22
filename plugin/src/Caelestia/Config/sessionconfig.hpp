@@ -27,10 +27,10 @@ class SessionCommands : public ConfigObject {
     Q_OBJECT
     QML_ANONYMOUS
 
-    CONFIG_PROPERTY(QStringList, logout, { u"loginctl"_s, u"terminate-user"_s, u""_s })
-    CONFIG_PROPERTY(QStringList, shutdown, { u"systemctl"_s, u"poweroff"_s })
+    CONFIG_PROPERTY(QStringList, logout, { u"hyprshutdown"_s })
+    CONFIG_PROPERTY(QStringList, shutdown, { u"hyprshutdown"_s, u"-p"_s, u"systemctl poweroff"_s })
     CONFIG_PROPERTY(QStringList, hibernate, { u"systemctl"_s, u"hibernate"_s })
-    CONFIG_PROPERTY(QStringList, reboot, { u"systemctl"_s, u"reboot"_s })
+    CONFIG_PROPERTY(QStringList, reboot, { u"hyprshutdown"_s, u"-p"_s, u"systemctl reboot"_s, u"-t"_s, u"Rebooting..."_s })
 
 public:
     explicit SessionCommands(QObject* parent = nullptr)
