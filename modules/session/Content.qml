@@ -59,6 +59,7 @@ Column {
         speed: Config.general.sessionGifSpeed
         source: Paths.absolutePath(Config.paths.sessionGif)
         fillMode: AnimatedImage.PreserveAspectFit
+        visible: Config.paths.sessionGif !== ""
     }
 
     SessionButton {
