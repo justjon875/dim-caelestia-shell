@@ -18,6 +18,7 @@ qml_module(caelestia-services
         lyriccandidate.cpp
         lyrics.cpp
         sessionmanager.cpp
+        sessionmanager.hpp
     LIBRARIES
         Qt::DBus
         PkgConfig::Pipewire
