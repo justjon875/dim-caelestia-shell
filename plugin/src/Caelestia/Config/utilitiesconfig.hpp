@@ -61,6 +61,9 @@ class UtilitiesGameMode : public ConfigObject {
     CONFIG_GLOBAL_PROPERTY(bool, disableVisualizer, true)
     CONFIG_GLOBAL_PROPERTY(bool, disableShimeji, true)
 
+    CONFIG_GLOBAL_PROPERTY(bool, autoEnable, true)
+    CONFIG_GLOBAL_PROPERTY(QStringList, autoEnableRegexes)
+
 public:
     explicit UtilitiesGameMode(QObject* parent = nullptr)
         : ConfigObject(parent) {}

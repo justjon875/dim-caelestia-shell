@@ -1,8 +1,17 @@
 import QtQuick
 import QtQuick.Layouts
 import Caelestia.Config
+import qs.components
+import qs.components.containers
 import qs.components.controls
+import qs.components.images
+import qs.utils
+import qs.services
 import qs.modules.nexus.common
+import Quickshell
+import Quickshell.Hyprland
+import Quickshell.Widgets
+import Caelestia
 
 PageBase {
     id: root
@@ -19,6 +28,26 @@ PageBase {
 
         SectionHeader {
             first: true
+            text: qsTr("Auto-enable rules")
+        }
+
+        ToggleRow {
+            first: true
+            text: qsTr("Enable automatically")
+            subtext: qsTr("Turn on game mode when a target window is focused or running")
+            checked: GlobalConfig.utilities.gameMode.autoEnable
+            onToggled: GlobalConfig.utilities.gameMode.autoEnable = checked
+        }
+
+        NavRow {
+            last: true
+            icon: "ads_click"
+            label: qsTr("Target windows")
+            status: qsTr("Add or remove auto-enable targets")
+            onClicked: root.nState.openSubPage(3)
+        }
+
+        SectionHeader {
             text: qsTr("Hyprland overrides")
         }
 

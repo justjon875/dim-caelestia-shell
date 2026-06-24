@@ -2,15 +2,56 @@ pragma Singleton
 
 import QtQuick
 import Quickshell
+import Quickshell.Hyprland
 import Quickshell.Io
 import Caelestia
 import Caelestia.Config
 import qs.services
+import qs.utils
 
 Singleton {
     id: root
 
     property alias enabled: props.enabled
+
+    property bool _autoEnabled: false
+
+    function evaluateAutoEnable(): void {
+        const regexes = GlobalConfig.utilities.gameMode.autoEnableRegexes;
+        if (!GlobalConfig.utilities.gameMode.autoEnable || regexes.length === 0) {
+            if (_autoEnabled) {
+                _autoEnabled = false;
+                props.enabled = false;
+            }
+            return;
+        }
+
+        let isRunning = false;
+        for (const toplevel of Hyprland.toplevels.values) {
+            if (toplevel.lastIpcObject && Strings.testRegexList(regexes, toplevel.lastIpcObject.class)) {
+                isRunning = true;
+                break;
+            }
+        }
+
+        if (_autoEnabled !== isRunning) {
+            _autoEnabled = isRunning;
+            props.enabled = isRunning;
+        }
+    }
+
+    Connections {
+        target: Hyprland.toplevels
+        function onValuesChanged(): void {
+            root.evaluateAutoEnable();
+        }
+    }
+
+    Connections {
+        target: GlobalConfig.utilities.gameMode
+        function onAutoEnableChanged(): void { root.evaluateAutoEnable(); }
+        function onAutoEnableRegexesChanged(): void { root.evaluateAutoEnable(); }
+    }
 
     function setDynamicConfs(): void {
         const gameModeConfig = GlobalConfig.utilities.gameMode;
