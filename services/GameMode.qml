@@ -13,16 +13,34 @@ Singleton {
     property alias enabled: props.enabled
 
     function setDynamicConfs(): void {
-        Hypr.extras.applyOptions({
-            "animations:enabled": 0,
-            "decoration:shadow:enabled": 0,
-            "decoration:blur:enabled": 0,
-            "general:gaps_in": 0,
-            "general:gaps_out": 0,
-            "general:border_size": 1,
-            "decoration:rounding": 0,
-            "general:allow_tearing": 1
-        });
+        const gameModeConfig = GlobalConfig.utilities.gameMode;
+        let options = {};
+        if (gameModeConfig.disableHyprlandAnimations) options["animations:enabled"] = 0;
+        if (gameModeConfig.disableHyprlandShadows) options["decoration:shadow:enabled"] = 0;
+        if (gameModeConfig.disableHyprlandBlur) options["decoration:blur:enabled"] = 0;
+        if (gameModeConfig.disableHyprlandGaps) {
+            options["general:gaps_in"] = 0;
+            options["general:gaps_out"] = 0;
+            options["general:border_size"] = 1;
+            options["decoration:rounding"] = 0;
+        }
+        options["general:allow_tearing"] = 1;
+        
+        if (gameModeConfig.disableWindowTransparency) {
+            options["decoration:active_opacity"] = 1;
+            options["decoration:inactive_opacity"] = 1;
+            options["decoration:fullscreen_opacity"] = 1;
+        }
+
+        Hypr.extras.applyOptions(options);
+
+        if (gameModeConfig.disableWindowTransparency) {
+            if (Hypr.usingLua) {
+                Hypr.extras.batchMessage([`eval hl.window_rule({ match = { class = ".*" }, opaque = true })`]);
+            } else {
+                Hypr.extras.batchMessage([`keyword windowrulev2 opaque, class:.*`]);
+            }
+        }
     }
 
     onEnabledChanged: {

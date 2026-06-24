@@ -154,6 +154,9 @@ QtObject {
                 Component {
                     NotificationsPage {}
                 }
+                Component {
+                    GameModePage {}
+                }
             }
         },
         Component {

@@ -95,7 +95,7 @@ PageBase {
             onClicked: root.nState.openSubPage(1)
         }
 
-        // Polling
+        // Connections
         SectionHeader {
             text: qsTr("Polling")
         }
@@ -199,8 +199,15 @@ PageBase {
             text: qsTr("Service tuning")
         }
 
-        StepperRow {
+        NavRow {
             first: true
+            icon: "sports_esports"
+            label: qsTr("Game mode")
+            status: qsTr("Manage how Caelestia behaves while gaming")
+            onClicked: root.nState.openSubPage(2)
+        }
+
+        StepperRow {
             label: qsTr("Visualiser bars")
             subtext: qsTr("Number of bars in the audio visualisers")
             value: GlobalConfig.services.visualiserBars

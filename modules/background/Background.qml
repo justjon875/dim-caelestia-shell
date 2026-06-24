@@ -184,7 +184,7 @@ Variants {
             readonly property int lyricsBaseMargin: Tokens.padding.large * 2
 
             asynchronous: true
-            active: Config.background.desktopLyrics.enabled
+            active: Config.background.desktopLyrics.enabled && !(GameMode.enabled && GlobalConfig.utilities.gameMode.disableDesktopLyrics)
 
             anchors.margins: lyricsBaseMargin
             anchors.leftMargin: Config.bar.position === "left" ? lyricsBaseMargin + lyricsBarZone : lyricsBaseMargin
