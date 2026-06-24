@@ -40,12 +40,9 @@ Singleton {
         }
     }
 
-    Connections {
-        target: Hyprland.toplevels
-        function onValuesChanged(): void {
-            root.evaluateAutoEnable();
-        }
-    }
+    // Force Quickshell to continuously track windows in the background
+    property var _toplevelsTracker: Hyprland.toplevels.values
+    on_ToplevelsTrackerChanged: evaluateAutoEnable()
 
     Connections {
         target: GlobalConfig.utilities.gameMode
