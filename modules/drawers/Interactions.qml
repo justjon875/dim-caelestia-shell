@@ -134,6 +134,9 @@ CustomMouseArea {
 
             if (Config.bar.dock.detached && !Config.bar.dock.persistent)
                 dockWrapper.isHovered = false;
+
+            if (Config.sidebar.showOnHover)
+                visibilities.sidebar = false;
         }
     }
 
@@ -200,6 +203,14 @@ CustomMouseArea {
 
             const showSidebar = Config.bar.position === "right" ? pressed && dragStart.x < Math.max(Config.border.minThickness, panels.leftMargin + panels.sidebar.x + panels.sidebar.width) : pressed && dragStart.x > Math.min(screen.width - Config.border.minThickness, panels.leftMargin + panels.sidebar.x);
 
+            // Show sidebar on hover (top-right corner, bounded by notification panel height)
+            if (Config.sidebar.showOnHover) {
+                const sidebarTriggerY = Math.max(Config.sidebar.minHoverThreshold, panels.notifications.y + panels.notifications.height + borderThickness);
+                const showSidebarHover = x > Math.min(width - Config.border.minThickness, bar.implicitWidth + panels.sidebar.x) && y <= sidebarTriggerY;
+                if (showSidebarHover && !visibilities.sidebar)
+                    visibilities.sidebar = true;
+            }
+
             // Show/hide session on drag
             if (pressed && inRightPanel(panels.sessionWrapper, dragStart.x, dragStart.y) && withinPanelHeight(panels.sessionWrapper, x, y)) {
                 const showThreshold = Config.bar.position === "right" ? Config.session.dragThreshold : -Config.session.dragThreshold;
@@ -242,6 +253,19 @@ CustomMouseArea {
                     visibilities.session = true;
                 else if (Config.bar.position === "right" ? dragX < hideThreshold : dragX > hideThreshold)
                     visibilities.session = false;
+            }
+
+            // Show/hide sidebar on hover
+            if (Config.sidebar.showOnHover && !pressed) {
+                const sidebarTriggerY = Math.max(Config.sidebar.minHoverThreshold, panels.notifications.y + panels.notifications.height + borderThickness);
+                const showSidebarHover = x > Math.min(width - Config.border.minThickness, bar.implicitWidth + panels.sidebar.x) && y <= sidebarTriggerY;
+                if (showSidebarHover && !visibilities.sidebar) {
+                    visibilities.sidebar = true;
+                } else {
+                    const inSidebarArea = inRightPanel(panels.sidebar, x, y) || inRightPanel(panels.sessionWrapper, x, y);
+                    if (!inSidebarArea)
+                        visibilities.sidebar = false;
+                }
             }
 
             // Hide sidebar on drag
