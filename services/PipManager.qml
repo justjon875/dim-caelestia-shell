@@ -30,7 +30,7 @@ Singleton {
         target: Hyprland
         function onRawEvent(event: HyprlandEvent): void {
             const n = event.name;
-            if (n === "openwindow" || n === "windowtitle" || n === "changefloatingmode" || n === "activewindow" || n === "configreloaded" || n === "workspace" || n === "focusedmon") {
+            if (n === "closewindow" || n === "openwindow" || n === "windowtitle" || n === "changefloatingmode" || n === "activewindow" || n === "configreloaded" || n === "workspace" || n === "focusedmon") {
                 updateDebouncer.restart();
             }
         }
@@ -81,12 +81,21 @@ Singleton {
     function checkPip(): void {
         if (GlobalConfig.services.pipPaused) return;
 
+        let foundPip = false;
         const toplevels = Hyprland.toplevels.values;
         for (let i = 0; i < toplevels.length; i++) {
             const t = toplevels[i];
             if (t && t.title && t.title.match(/Picture[- ]in[- ][Pp]icture/)) {
                 root.movePip(t);
+                foundPip = true;
             }
+        }
+        
+        if (!foundPip) {
+            root.currentPipAddress = "";
+            root.lastPipX = -1;
+            root.lastPipY = -1;
+            root.tempPipPosition = "";
         }
     }
 
